@@ -148,8 +148,8 @@
 
     <!-- Main App View -->
     <div id="app-view" class="max-w-4xl mx-auto p-4 sm:p-6 hidden">
-         <header class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mb-8 sm:mb-10">
-            <div class="text-center sm:text-left">
+         <header class="flex justify-between items-center mb-8">
+            <div>
                 <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Klaro</h1>
                 <p id="welcome-message" class="text-gray-600 text-sm">Welcome back!</p>
             </div>
@@ -160,9 +160,9 @@
             </div>
         </header>
         
-        <main id="main-content" class="space-y-8">
+        <main id="main-content" class="space-y-6">
             <!-- Summary Section -->
-            <section id="summary" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <section id="summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                  <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="total_income" class="font-semibold text-gray-500">Total Income</h3>
                     <p id="total-income" class="text-2xl sm:text-3xl font-bold text-green-600 mt-2">€0.00</p>
@@ -211,52 +211,6 @@
                 <div id="tips-content" class="mt-2 text-indigo-700 dark:text-indigo-400 text-sm"></div>
             </section>
             
-            <!-- Add Transaction Section -->
-            <section id="add-transaction" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 data-lang="add_transaction" class="text-2xl font-bold">Add Transaction</h2>
-                </div>
-                <p data-lang="motivational_quote" class="text-sm text-gray-500 mb-4 italic">"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."</p>
-                <form id="transaction-form">
-                     <div class="flex justify-center rounded-lg p-1 bg-indigo-100 mb-4">
-                        <button type="button" id="type-income" data-lang="income" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-active">Income</button>
-                        <button type="button" id="type-expense" data-lang="expense" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-inactive">Expense</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="relative">
-                            <label for="description" data-lang="description" class="block text-sm font-medium text-gray-700">Description</label>
-                            <input type="text" id="description" data-lang-placeholder="description_placeholder" placeholder="e.g., Salary, Groceries" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                             <label for="amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
-                            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div id="expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
-                        <div>
-                             <label for="rule-category" data-lang="budget_category" class="block text-sm font-medium text-gray-700">Budget Category</label>
-                             <select id="rule-category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="Needs" data-lang="need_option">Need</option>
-                                <option value="Wants" data-lang="want_option">Want</option>
-                                <option value="Savings" data-lang="saving_option">Saving</option>
-                             </select>
-                        </div>
-                         <div>
-                             <label for="category" data-lang="sub_category" class="block text-sm font-medium text-gray-700">Sub-Category</label>
-                             <select id="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <optgroup label="Needs"><option>Housing</option><option>Utilities</option><option>Groceries</option><option>Transport</option><option>Health</option><option>Debt Payments</option></optgroup>
-                                 <optgroup label="Wants"><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Hobbies</option><option>Subscriptions</option><option>Vacation</option></optgroup>
-                                <optgroup label="Savings"><option>Emergency Fund</option><option>Investments</option><option>Retirement</option></optgroup>
-                             </select>
-                        </div>
-                    </div>
-                    <div id="expense-helper-text" class="hidden">
-                        <p data-lang="check_categories_helper" class="text-xs text-gray-500 text-center mt-2">Please select the correct categories for your expense.</p>
-                    </div>
-                    <button type="submit" data-lang="add_transaction_btn" class="mt-4 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Add Transaction</button>
-                </form>
-            </section>
-            
             <!-- Transaction History -->
             <section id="transaction-history">
                 <h2 data-lang="recent_transactions" class="text-2xl font-bold mb-4">Recent Transactions</h2>
@@ -290,6 +244,100 @@
         </main>
     </div>
 
+    <!-- FAB -->
+    <button id="fab-add-btn" class="fixed bottom-6 right-6 bg-indigo-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-transform transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+    </button>
+    
+    <!-- Add Transaction Modal -->
+    <div id="add-transaction-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-content bg-white w-11/12 sm:max-w-md mx-auto rounded-2xl shadow-lg z-50 p-6 transform -translate-y-64">
+             <div class="flex justify-between items-center pb-3">
+                <h2 data-lang="add_transaction" class="text-2xl font-bold">Add Transaction</h2>
+                <button id="close-add-transaction-modal" class="cursor-pointer z-50 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 text-2xl">&times;</button>
+            </div>
+            <p data-lang="motivational_quote" class="text-sm text-gray-500 mb-4 italic">"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."</p>
+            <form id="transaction-form">
+                 <div class="flex justify-center rounded-lg p-1 bg-indigo-100 mb-4">
+                    <button type="button" id="type-income" data-lang="income" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-active">Income</button>
+                    <button type="button" id="type-expense" data-lang="expense" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-inactive">Expense</button>
+                </div>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <label for="description" data-lang="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <input type="text" id="description" data-lang-placeholder="description_placeholder" placeholder="e.g., Salary, Groceries" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                         <label for="amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div id="expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                    <div>
+                         <label for="rule-category" data-lang="budget_category" class="block text-sm font-medium text-gray-700">Budget Category</label>
+                         <select id="rule-category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="Needs" data-lang="need_option">Need</option>
+                            <option value="Wants" data-lang="want_option">Want</option>
+                            <option value="Savings" data-lang="saving_option">Saving</option>
+                         </select>
+                    </div>
+                     <div>
+                         <label for="category" data-lang="sub_category" class="block text-sm font-medium text-gray-700">Sub-Category</label>
+                         <select id="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                         </select>
+                    </div>
+                </div>
+                <div id="expense-helper-text" class="hidden">
+                    <p data-lang="check_categories_helper" class="text-xs text-gray-500 text-center mt-2">Please select the correct categories for your expense.</p>
+                </div>
+                <button type="submit" data-lang="add_transaction_btn" class="mt-6 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Add Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div id="edit-transaction-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-content bg-white w-11/12 sm:max-w-md mx-auto rounded-2xl shadow-lg z-50 p-6 transform -translate-y-64">
+             <div class="flex justify-between items-center pb-3">
+                <h2 data-lang="edit_transaction" class="text-2xl font-bold">Edit Transaction</h2>
+                <button id="close-edit-transaction-modal" class="cursor-pointer z-50 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 text-2xl">&times;</button>
+            </div>
+            <form id="edit-transaction-form">
+                <input type="hidden" id="edit-transaction-id">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <label for="edit-description" data-lang="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <input type="text" id="edit-description" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                         <label for="edit-amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
+                        <input type="number" id="edit-amount" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div id="edit-expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                         <label for="edit-rule-category" data-lang="budget_category" class="block text-sm font-medium text-gray-700">Budget Category</label>
+                         <select id="edit-rule-category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="Needs" data-lang="need_option">Need</option>
+                            <option value="Wants" data-lang="want_option">Want</option>
+                            <option value="Savings" data-lang="saving_option">Saving</option>
+                         </select>
+                    </div>
+                     <div>
+                         <label for="edit-category" data-lang="sub_category" class="block text-sm font-medium text-gray-700">Sub-Category</label>
+                         <select id="edit-category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                         </select>
+                    </div>
+                </div>
+                <button type="submit" data-lang="save_changes_btn" class="mt-6 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -313,6 +361,16 @@
                     <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
                         <button type="button" id="lang-en-btn" class="lang-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-lang-set="en">English</button>
                         <button type="button" id="lang-hr-btn" class="lang-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-lang-set="hr">Hrvatski</button>
+                    </div>
+                </div>
+                 <div class="space-y-2 mt-4">
+                    <label data-lang="privacy" class="block text-sm font-medium">Privacy</label>
+                    <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-700 rounded-lg p-3">
+                        <span data-lang="hide_amounts" class="text-sm font-medium">Hide amounts</span>
+                        <label for="privacy-toggle" class="inline-flex relative items-center cursor-pointer">
+                            <input type="checkbox" value="" id="privacy-toggle" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-500 peer-checked:bg-indigo-600"></div>
+                        </label>
                     </div>
                 </div>
                 
@@ -342,7 +400,8 @@
                 monthly_review: 'Monthly Review', review_for: 'Review for', net_savings: 'Net Savings', no_review_data: 'No data available for this month.',
                 settings: 'Settings', customize_budget: 'Customize Your Budget Rule', set_financial_goal: 'Set Your Financial Goal',
                 goal: 'Goal', goal_placeholder: 'e.g., Vacation', save_settings: 'Save Settings', logout: 'Logout',
-                appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, '
+                appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, ',
+                privacy: 'Privacy', hide_amounts: 'Hide amounts', edit_transaction: 'Edit Transaction', save_changes_btn: 'Save Changes'
             },
             hr: {
                 total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
@@ -356,8 +415,15 @@
                 monthly_review: 'Mjesečni Pregled', review_for: 'Pregled za', net_savings: 'Neto Ušteda', no_review_data: 'Nema podataka za ovaj mjesec.',
                 settings: 'Postavke', customize_budget: 'Prilagodite Svoje Pravilo Budžetiranja', set_financial_goal: 'Postavite Svoj Financijski Cilj',
                 goal: 'Cilj', goal_placeholder: 'npr. Putovanje', save_settings: 'Spremi Postavke', logout: 'Odjava',
-                appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, '
+                appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, ',
+                privacy: 'Privatnost', hide_amounts: 'Sakrij iznose', edit_transaction: 'Uredi Transakciju', save_changes_btn: 'Spremi Promjene'
             }
+        };
+        
+        const subCategoryMap = {
+            Needs: ['Housing', 'Utilities', 'Groceries', 'Transport', 'Health', 'Debt Payments'],
+            Wants: ['Dining Out', 'Entertainment', 'Shopping', 'Hobbies', 'Subscriptions', 'Vacation'],
+            Savings: ['Emergency Fund', 'Investments', 'Retirement']
         };
 
         // --- DOM Elements ---
@@ -401,6 +467,21 @@
         const monthlyChartCanvas = document.getElementById('monthly-chart');
         let monthlyChart = null;
         const resetAppBtn = document.getElementById('reset-app-btn');
+        const privacyToggle = document.getElementById('privacy-toggle');
+        const fabAddBtn = document.getElementById('fab-add-btn');
+        const addTransactionModal = document.getElementById('add-transaction-modal');
+        const closeAddTransactionModalBtn = document.getElementById('close-add-transaction-modal');
+        
+        // Edit Modal Elements
+        const editTransactionModal = document.getElementById('edit-transaction-modal');
+        const closeEditTransactionModalBtn = document.getElementById('close-edit-transaction-modal');
+        const editTransactionForm = document.getElementById('edit-transaction-form');
+        const editTransactionIdInput = document.getElementById('edit-transaction-id');
+        const editDescriptionInput = document.getElementById('edit-description');
+        const editAmountInput = document.getElementById('edit-amount');
+        const editRuleCategoryInput = document.getElementById('edit-rule-category');
+        const editCategoryInput = document.getElementById('edit-category');
+        const editExpenseFieldsWrapper = document.getElementById('edit-expense-fields-wrapper');
 
 
         // --- App State ---
@@ -445,6 +526,7 @@
                 
                 applyTheme(userProfile.settings.theme);
                 applyLanguage(userProfile.settings.language);
+                privacyToggle.checked = userProfile.settings.privacyMode;
                 renderApp();
             } else {
                 appView.classList.add('hidden');
@@ -521,7 +603,8 @@
                         amount: parseFloat(document.getElementById('onboarding-goal-amount').value) || 0,
                     },
                     theme: 'light',
-                    language: 'en'
+                    language: 'en',
+                    privacyMode: false
                 }
             };
             
@@ -531,7 +614,7 @@
         });
 
 
-        // --- Appearance & Language ---
+        // --- Appearance & Language & Privacy---
         function applyTheme(theme) {
             document.documentElement.classList.toggle('dark', theme === 'dark');
             themeLightBtn.classList.toggle('setting-btn-active', theme === 'light');
@@ -551,15 +634,14 @@
             });
             langEnBtn.classList.toggle('setting-btn-active', lang === 'en');
             langHrBtn.classList.toggle('setting-btn-active', lang === 'hr');
-            updateSummaryAndBudget();
+            renderApp();
         }
-
-        async function saveAppearanceSettings() {
-            if (!userProfile) return;
-            userProfile.settings.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            userProfile.settings.language = langEnBtn.classList.contains('setting-btn-active') ? 'en' : 'hr';
+        
+        privacyToggle.addEventListener('change', (e) => {
+            userProfile.settings.privacyMode = e.target.checked;
             saveData();
-        }
+            renderApp();
+        });
 
         themeLightBtn.addEventListener('click', () => {
             userProfile.settings.theme = 'light';
@@ -655,10 +737,10 @@
             const spentOnWants = monthlyTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
             const amountSaved = monthlyTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
             const net = income - expenses;
-
-            reviewIncome.textContent = formatCurrency(income);
-            reviewExpenses.textContent = formatCurrency(expenses);
-            reviewSavings.textContent = formatCurrency(net);
+            
+            reviewIncome.innerHTML = getDisplayValue(income);
+            reviewExpenses.innerHTML = getDisplayValue(expenses);
+            reviewSavings.innerHTML = getDisplayValue(net);
             reviewSavings.className = net >= 0 ? 'font-medium text-green-600' : 'font-medium text-red-600';
             
             const chartData = {
@@ -704,6 +786,10 @@
         }
 
         async function getAIMonthlyAdvice(data) {
+             if (isNaN(data.income) || isNaN(data.spentOnNeeds) || isNaN(data.spentOnWants) || isNaN(data.amountSaved)) {
+                console.error("Invalid data passed to getAIMonthlyAdvice:", data);
+                return "<p>Could not generate advice due to invalid data.</p>";
+            }
              const prompt = `Here is my financial summary for ${data.month}:
             - Total Income: ${formatCurrency(data.income)}
             - Spending on Needs: ${formatCurrency(data.spentOnNeeds)}
@@ -779,22 +865,42 @@
             typeExpenseBtn.classList.toggle('tab-inactive', type !== 'expense');
             expenseFieldsWrapper.classList.toggle('hidden', type === 'income');
             expenseHelperText.classList.toggle('hidden', type === 'income');
+            if (type === 'expense') {
+                updateSubCategoryOptions();
+            }
         }
+        
+        function updateSubCategoryOptions() {
+            const selectedRule = ruleCategoryInput.value;
+            const options = subCategoryMap[selectedRule] || [];
+
+            categoryInput.innerHTML = ''; // Clear existing options
+
+            options.forEach(optionText => {
+                const option = document.createElement('option');
+                option.value = optionText;
+                option.textContent = optionText;
+                categoryInput.appendChild(option);
+            });
+        }
+        
+        ruleCategoryInput.addEventListener('change', updateSubCategoryOptions);
+
 
         typeIncomeBtn.addEventListener('click', () => setTransactionType('income'));
         typeExpenseBtn.addEventListener('click', () => setTransactionType('expense'));
 
         transactionForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const description = descriptionInput.value.trim();
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (!description || isNaN(amount) || amount <= 0) return;
+            const descriptionVal = descriptionInput.value.trim();
+            const amountVal = parseFloat(document.getElementById('amount').value);
+            if (!descriptionVal || isNaN(amountVal) || amountVal <= 0) return;
 
             const newTransaction = { 
                 id: Date.now().toString(),
                 type: currentTransactionType, 
-                description, 
-                amount, 
+                description: descriptionVal, 
+                amount: amountVal, 
                 timestamp: new Date()
             };
             if (currentTransactionType === 'expense') {
@@ -802,17 +908,12 @@
                 newTransaction.ruleCategory = ruleCategoryInput.value;
             }
             
-            transactions.unshift(newTransaction);
-            saveData();
-            
-            if (currentTransactionType === 'income') { setTransactionType('expense'); }
-            
             // Manually reset only description and amount
             descriptionInput.value = '';
             document.getElementById('amount').value = '';
 
-            descriptionInput.focus();
             renderApp();
+            toggleAddTransactionModal();
         });
 
         transactionListEl.addEventListener('click', (e) => {
@@ -823,9 +924,24 @@
                 saveData();
                 renderApp();
             }
+
+            const editButton = e.target.closest('.edit-btn');
+            if (editButton) {
+                const transactionId = editButton.dataset.id;
+                openEditModal(transactionId);
+            }
         });
 
-        const formatCurrency = (value) => new Intl.NumberFormat(userProfile.settings.language === 'hr' ? 'hr-HR' : 'de-DE', { style: 'currency', currency: 'EUR' }).format(value);
+        const formatCurrency = (value) => new Intl.NumberFormat(userProfile?.settings.language === 'hr' ? 'hr-HR' : 'de-DE', { style: 'currency', currency: 'EUR' }).format(value);
+        
+        const getDisplayValue = (value) => {
+            if (userProfile?.settings.privacyMode) {
+                return `<span>***</span> <button class="reveal-amount-btn" data-amount="${value}">
+                    <svg class="w-5 h-5 inline-block text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                </button>`;
+            }
+            return formatCurrency(value);
+        };
 
         function renderTransactions() {
             const now = new Date();
@@ -851,8 +967,11 @@
                             <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
                         </div>
                         <div class="text-right flex items-center">
-                            <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${formatCurrency(t.amount)}</p>
-                            <button data-id="${t.id}" class="delete-btn p-1 ml-2 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                            <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${getDisplayValue(t.amount)}</p>
+                            <button data-id="${t.id}" class="edit-btn p-1 ml-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
+                            </button>
+                            <button data-id="${t.id}" class="delete-btn p-1 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
                                 <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
                         </div>
@@ -869,9 +988,9 @@
             const totalIncome = currentMonthTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
             const totalExpenses = currentMonthTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
             
-            totalIncomeEl.textContent = formatCurrency(totalIncome);
-            totalExpensesEl.textContent = formatCurrency(totalExpenses);
-            balanceEl.textContent = formatCurrency(totalIncome - totalExpenses);
+            totalIncomeEl.innerHTML = getDisplayValue(totalIncome);
+            totalExpensesEl.innerHTML = getDisplayValue(totalExpenses);
+            balanceEl.innerHTML = getDisplayValue(totalIncome - totalExpenses);
 
             const needsBudget = totalIncome * (userProfile.settings.budget.needs / 100);
             const wantsBudget = totalIncome * (userProfile.settings.budget.wants / 100);
@@ -884,9 +1003,9 @@
             wantsTitleEl.textContent = `${translations[userProfile.settings.language].wants} (${userProfile.settings.budget.wants}%)`;
             savingsTitleEl.textContent = `${translations[userProfile.settings.language].savings} (${userProfile.settings.budget.savings}%)`;
 
-            needsSummaryEl.textContent = `${formatCurrency(spentOnNeeds)} / ${formatCurrency(needsBudget)}`;
-            wantsSummaryEl.textContent = `${formatCurrency(spentOnWants)} / ${formatCurrency(wantsBudget)}`;
-            savingsSummaryEl.textContent = `${formatCurrency(amountSaved)} / ${formatCurrency(savingsTarget)}`;
+            needsSummaryEl.innerHTML = `${getDisplayValue(spentOnNeeds)} / ${getDisplayValue(needsBudget)}`;
+            wantsSummaryEl.innerHTML = `${getDisplayValue(spentOnWants)} / ${getDisplayValue(wantsBudget)}`;
+            savingsSummaryEl.innerHTML = `${getDisplayValue(amountSaved)} / ${getDisplayValue(savingsTarget)}`;
             
             needsBarEl.style.width = `${needsBudget > 0 ? Math.min((spentOnNeeds / needsBudget) * 100, 100) : 0}%`;
             wantsBarEl.style.width = `${wantsBudget > 0 ? Math.min((spentOnWants / wantsBudget) * 100, 100) : 0}%`;
@@ -894,20 +1013,90 @@
 
             getAIFinancialPlan();
         }
-
-        const toggleModal = () => {
-            settingsModal.classList.toggle('hidden');
-            if (!settingsModal.classList.contains('hidden')) {
-                settingsModal.classList.add('modal-active');
-                setTimeout(() => { settingsModal.querySelector('.modal-content').style.transform = 'translateY(0)'; }, 10);
+        
+        // --- Modal Logic ---
+        const toggleModal = (modal) => {
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                modal.classList.add('modal-active');
+                setTimeout(() => { modal.querySelector('.modal-content').style.transform = 'translateY(0)'; }, 10);
             } else {
-                 settingsModal.querySelector('.modal-content').style.transform = 'translateY(-16rem)';
-                 setTimeout(() => settingsModal.classList.remove('modal-active'), 250);
+                 modal.querySelector('.modal-content').style.transform = 'translateY(-16rem)';
+                 setTimeout(() => modal.classList.remove('modal-active'), 250);
             }
         };
 
-        settingsBtn.addEventListener('click', toggleModal);
-        closeSettingsModalBtn.addEventListener('click', toggleModal);
+        const toggleAddTransactionModal = () => toggleModal(addTransactionModal);
+
+        settingsBtn.addEventListener('click', () => toggleModal(settingsModal));
+        closeSettingsModalBtn.addEventListener('click', () => toggleModal(settingsModal));
+        fabAddBtn.addEventListener('click', () => {
+            setTransactionType('expense'); // Default to expense
+            toggleAddTransactionModal();
+        });
+        closeAddTransactionModalBtn.addEventListener('click', toggleAddTransactionModal);
+
+        // --- Edit Modal Logic ---
+        function openEditModal(transactionId) {
+            const transaction = transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+
+            editTransactionIdInput.value = transaction.id;
+            editDescriptionInput.value = transaction.description;
+            editAmountInput.value = transaction.amount;
+            
+            if (transaction.type === 'expense') {
+                editExpenseFieldsWrapper.style.display = 'grid';
+                editRuleCategoryInput.value = transaction.ruleCategory;
+                updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput); // Update sub-categories
+                editCategoryInput.value = transaction.category;
+            } else {
+                editExpenseFieldsWrapper.style.display = 'none';
+            }
+
+            toggleModal(editTransactionModal);
+        }
+
+        function updateEditSubCategoryOptions() {
+             const selectedRule = editRuleCategoryInput.value;
+            const options = subCategoryMap[selectedRule] || [];
+
+            editCategoryInput.innerHTML = ''; // Clear existing options
+
+            options.forEach(optionText => {
+                const option = document.createElement('option');
+                option.value = optionText;
+                option.textContent = optionText;
+                editCategoryInput.appendChild(option);
+            });
+        }
+        
+        editRuleCategoryInput.addEventListener('change', updateEditSubCategoryOptions);
+        closeEditTransactionModalBtn.addEventListener('click', () => toggleModal(editTransactionModal));
+
+        editTransactionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const transactionId = editTransactionIdInput.value;
+            const transactionIndex = transactions.findIndex(t => t.id === transactionId);
+            if (transactionIndex === -1) return;
+
+            const updatedTransaction = {
+                ...transactions[transactionIndex],
+                description: editDescriptionInput.value,
+                amount: parseFloat(editAmountInput.value)
+            };
+
+            if (updatedTransaction.type === 'expense') {
+                updatedTransaction.ruleCategory = editRuleCategoryInput.value;
+                updatedTransaction.category = editCategoryInput.value;
+            }
+
+            transactions[transactionIndex] = updatedTransaction;
+            saveData();
+            renderApp();
+            toggleModal(editTransactionModal);
+        });
+
 
         resetAppBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to reset all app data? This cannot be undone.')) {
@@ -917,9 +1106,26 @@
             }
         });
 
+        // --- Privacy Reveal Logic ---
+        document.body.addEventListener('click', (e) => {
+            const revealBtn = e.target.closest('.reveal-amount-btn');
+            if (revealBtn) {
+                const amount = parseFloat(revealBtn.dataset.amount);
+                const amountContainer = revealBtn.previousElementSibling;
+                if (amountContainer) {
+                    const originalText = amountContainer.textContent;
+                    amountContainer.textContent = formatCurrency(amount);
+                    setTimeout(() => {
+                        amountContainer.textContent = originalText;
+                    }, 2000);
+                }
+            }
+        });
+
         // --- Initial Load ---
         initializeApp();
     </script>
 </body>
 </html>
+
 
