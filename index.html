@@ -200,7 +200,7 @@
             </section>
 
              <!-- AI Financial Plan Section -->
-             <section id="tips-section" class="bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 p-4 rounded-r-lg hidden">
+             <section id="tips-section" class="bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 p-4 rounded-r-lg">
                 <h3 data-lang="ai_financial_plan" class="text-lg font-bold text-indigo-800 dark:text-indigo-300">Your AI Financial Plan</h3>
                 <div id="tips-content" class="mt-2 text-indigo-700 dark:text-indigo-400 text-sm"></div>
             </section>
@@ -341,12 +341,9 @@
                 </div>
                  <div class="space-y-2 mt-4">
                     <label data-lang="privacy" class="block text-sm font-medium">Privacy</label>
-                    <div class="flex items-center justify-between bg-gray-200 dark:bg-gray-700 rounded-lg p-3">
-                        <span data-lang="hide_amounts" class="text-sm font-medium">Hide amounts</span>
-                        <label for="privacy-toggle" class="inline-flex relative items-center cursor-pointer">
-                            <input type="checkbox" value="" id="privacy-toggle" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-500 peer-checked:bg-indigo-600"></div>
-                        </label>
+                    <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
+                        <button type="button" id="privacy-on-btn" class="privacy-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-privacy-mode="true" data-lang="privacy_on">On</button>
+                        <button type="button" id="privacy-off-btn" class="privacy-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-privacy-mode="false" data-lang="privacy_off">Off</button>
                     </div>
                 </div>
                 
@@ -360,7 +357,7 @@
     <script type="module">
         // --- App Config ---
         const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";
-        const apiKey = ""; // Canvas will provide this
+        const apiKey = ""; // This will be provided by the Canvas environment automatically.
 
         // --- Translations ---
         const translations = {
@@ -377,7 +374,9 @@
                 settings: 'Settings', customize_budget: 'Customize Your Budget Rule', set_financial_goal: 'Set Your Financial Goal',
                 goal: 'Goal', goal_placeholder: 'e.g., Vacation', save_settings: 'Save Settings', logout: 'Logout',
                 appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, ',
-                privacy: 'Privacy', hide_amounts: 'Hide amounts', edit_transaction: 'Edit Transaction', save_changes_btn: 'Save Changes'
+                privacy: 'Privacy', hide_amounts: 'Hide amounts', edit_transaction: 'Edit Transaction', save_changes_btn: 'Save Changes',
+                set_goal_prompt: 'Set a financial goal in your settings to get a personalized AI plan!',
+                privacy_on: 'On', privacy_off: 'Off'
             },
             hr: {
                 total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
@@ -392,7 +391,9 @@
                 settings: 'Postavke', customize_budget: 'Prilagodite Svoje Pravilo Budžetiranja', set_financial_goal: 'Postavite Svoj Financijski Cilj',
                 goal: 'Cilj', goal_placeholder: 'npr. Putovanje', save_settings: 'Spremi Postavke', logout: 'Odjava',
                 appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, ',
-                privacy: 'Privatnost', hide_amounts: 'Sakrij iznose', edit_transaction: 'Uredi Transakciju', save_changes_btn: 'Spremi Promjene'
+                privacy: 'Privatnost', hide_amounts: 'Sakrij iznose', edit_transaction: 'Uredi Transakciju', save_changes_btn: 'Spremi Promjene',
+                set_goal_prompt: 'Postavite financijski cilj u postavkama kako biste dobili personalizirani AI plan!',
+                privacy_on: 'Uključeno', privacy_off: 'Isključeno'
             }
         };
         
@@ -442,7 +443,8 @@
         const monthlyChartCanvas = document.getElementById('monthly-chart');
         let monthlyChart = null;
         const resetAppBtn = document.getElementById('reset-app-btn');
-        const privacyToggle = document.getElementById('privacy-toggle');
+        const privacyOnBtn = document.getElementById('privacy-on-btn');
+        const privacyOffBtn = document.getElementById('privacy-off-btn');
         
         // Edit Modal Elements
         const editTransactionModal = document.getElementById('edit-transaction-modal');
@@ -498,7 +500,7 @@
                 
                 applyTheme(userProfile.settings.theme);
                 applyLanguage(userProfile.settings.language);
-                privacyToggle.checked = userProfile.settings.privacyMode;
+                applyPrivacyModeUI(userProfile.settings.privacyMode);
                 renderApp();
             } else {
                 appView.classList.add('hidden');
@@ -605,11 +607,26 @@
             });
             langEnBtn.classList.toggle('setting-btn-active', lang === 'en');
             langHrBtn.classList.toggle('setting-btn-active', lang === 'hr');
-            renderApp();
+            
+            updateSummaryAndBudget();
+            setupMonthSelector();
+            renderTransactions();
         }
         
-        privacyToggle.addEventListener('change', (e) => {
-            userProfile.settings.privacyMode = e.target.checked;
+        function applyPrivacyModeUI(isPrivate) {
+            privacyOnBtn.classList.toggle('setting-btn-active', isPrivate);
+            privacyOffBtn.classList.toggle('setting-btn-active', !isPrivate);
+        }
+
+        privacyOnBtn.addEventListener('click', () => {
+            userProfile.settings.privacyMode = true;
+            applyPrivacyModeUI(true);
+            saveData();
+            renderApp();
+        });
+        privacyOffBtn.addEventListener('click', () => {
+            userProfile.settings.privacyMode = false;
+            applyPrivacyModeUI(false);
             saveData();
             renderApp();
         });
@@ -788,7 +805,9 @@
 
         async function getAIFinancialPlan() {
              if (!userProfile.settings.goal.description || !userProfile.settings.goal.amount || userProfile.settings.goal.amount <= 0) {
-                 tipsSection.classList.add('hidden');
+                 tipsSection.classList.remove('hidden');
+                 const promptText = translations[userProfile.settings.language]?.set_goal_prompt || translations.en.set_goal_prompt;
+                 tipsContent.innerHTML = `<p>${promptText}</p>`;
                  return;
              }
             const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
@@ -805,8 +824,8 @@
 
             const prompt = `User's financial data for the current period, in EUR:
             - Total Income: ${totalIncome.toFixed(2)}
-            - Spending on Needs: ${spentOnNeeds.toFixed(2)} (${Math.round(spentOnNeeds/totalIncome*100)}%)
-            - Spending on Wants: ${spentOnWants.toFixed(2)} (${Math.round(spentOnWants/totalIncome*100)}%)
+            - Spending on Needs: ${spentOnNeeds.toFixed(2)}
+            - Spending on Wants: ${spentOnWants.toFixed(2)}
             - Total Saved: ${amountSaved.toFixed(2)}
             - Financial Goal: Save ${userProfile.settings.goal.amount.toFixed(2)} for "${userProfile.settings.goal.description}".
             Provide a short, actionable financial plan (2-3 bullet points) to help the user reach their goal. Suggest specific, realistic adjustments.`;
