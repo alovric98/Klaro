@@ -761,11 +761,11 @@
                 console.error("Invalid data passed to getAIMonthlyAdvice:", data);
                 return "<p>Could not generate advice due to invalid data.</p>";
             }
-             const prompt = `Here is my financial summary for ${data.month}:
-            - Total Income: ${formatCurrency(data.income)}
-            - Spending on Needs: ${formatCurrency(data.spentOnNeeds)}
-            - Spending on Wants: ${formatCurrency(data.spentOnWants)}
-            - Total Saved (from transactions categorized as savings): ${formatCurrency(data.amountSaved)}
+             const prompt = `Here is my financial summary in EUR for ${data.month}:
+            - Total Income: ${data.income.toFixed(2)}
+            - Spending on Needs: ${data.spentOnNeeds.toFixed(2)}
+            - Spending on Wants: ${data.spentOnWants.toFixed(2)}
+            - Total Saved (from transactions categorized as savings): ${data.amountSaved.toFixed(2)}
             - My budget rule is roughly: Needs (${userProfile.settings.budget.needs}%), Wants (${userProfile.settings.budget.wants}%), Savings (${userProfile.settings.budget.savings}%)
             - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}".
 
@@ -803,12 +803,12 @@
             const spentOnWants = transactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
             const amountSaved = transactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
 
-            const prompt = `User's financial data for the current period:
-            - Total Income: ${formatCurrency(totalIncome)}
-            - Spending on Needs: ${formatCurrency(spentOnNeeds)} (${Math.round(spentOnNeeds/totalIncome*100)}%)
-            - Spending on Wants: ${formatCurrency(spentOnWants)} (${Math.round(spentOnWants/totalIncome*100)}%)
-            - Total Saved: ${formatCurrency(amountSaved)}
-            - Financial Goal: Save ${formatCurrency(userProfile.settings.goal.amount)} for "${userProfile.settings.goal.description}".
+            const prompt = `User's financial data for the current period, in EUR:
+            - Total Income: ${totalIncome.toFixed(2)}
+            - Spending on Needs: ${spentOnNeeds.toFixed(2)} (${Math.round(spentOnNeeds/totalIncome*100)}%)
+            - Spending on Wants: ${spentOnWants.toFixed(2)} (${Math.round(spentOnWants/totalIncome*100)}%)
+            - Total Saved: ${amountSaved.toFixed(2)}
+            - Financial Goal: Save ${userProfile.settings.goal.amount.toFixed(2)} for "${userProfile.settings.goal.description}".
             Provide a short, actionable financial plan (2-3 bullet points) to help the user reach their goal. Suggest specific, realistic adjustments.`;
 
             const payload = {
@@ -1079,3 +1079,4 @@
     </script>
 </body>
 </html>
+
