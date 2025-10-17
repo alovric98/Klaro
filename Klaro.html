@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klaro - Your Financial Clarity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .tab-active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .tab-inactive {
+            background-color: #e0e7ff;
+            color: #4338ca;
+        }
+        .setting-btn-active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-active {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        .spinner {
+            border-top-color: #4f46e5;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Dark Mode Styles */
+        .dark body {
+            background-color: #111827;
+            color: #d1d5db;
+        }
+        .dark .bg-white {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .dark .text-gray-800, .dark .text-gray-900 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-500, .dark .text-gray-600 {
+            color: #9ca3af;
+        }
+        .dark .border-gray-200 {
+            border-color: #374151;
+        }
+        .dark input, .dark select {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+        .dark input::placeholder {
+            color: #9ca3af;
+        }
+        .dark .bg-gray-200 { background-color: #374151; }
+        .dark .bg-indigo-100 { background-color: #3730a3; }
+        .dark .tab-inactive { background-color: #374151; color: #a5b4fc; }
+        .dark .setting-btn-inactive { background-color: #374151; color: #a5b4fc; }
+        .dark #monthly-chart { color: #f9fafb; }
+        .dark .chartjs-legend-text { color: #f9fafb; }
+        .dark text { fill: #f9fafb; }
+        .dark .setting-btn-active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .dark .dark\:text-gray-300 {
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    
+    <!-- Onboarding View -->
+    <div id="onboarding-view" class="max-w-xl mx-auto p-6 min-h-screen flex items-center hidden">
+        <div class="w-full bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+            <h1 class="text-3xl font-bold text-center mb-2">Welcome to Klaro</h1>
+            <p class="text-center text-gray-600 mb-6">Let's set up your financial profile to get started.</p>
+            <form id="onboarding-form" class="space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="onboarding-name" class="block text-sm font-medium">Full Name</label>
+                        <input type="text" id="onboarding-name" placeholder="e.g., Ivan Horvat" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label for="onboarding-age" class="block text-sm font-medium">Age</label>
+                        <input type="number" id="onboarding-age" placeholder="e.g., 28" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Your Budget Rule</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="onboarding-needs-slider" class="block text-sm font-medium">Needs (<span id="onboarding-needs-slider-val">50</span>%)</label>
+                            <input id="onboarding-needs-slider" type="range" min="0" max="100" value="50" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="onboarding-wants-slider" class="block text-sm font-medium">Wants (<span id="onboarding-wants-slider-val">30</span>%)</label>
+                            <input id="onboarding-wants-slider" type="range" min="0" max="100" value="30" class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="onboarding-savings-slider" class="block text-sm font-medium">Savings (<span id="onboarding-savings-slider-val">20</span>%)</label>
+                            <input id="onboarding-savings-slider" type="range" min="0" max="100" value="20" class="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <p id="onboarding-slider-total" class="text-sm font-bold text-center text-gray-700">Total: 100%</p>
+                        <p class="text-xs text-gray-500 text-center mt-4 italic">Experts recommend setting aside **at least 10%** for savings and investments. Remember, even a small amount like €20 helps build a habit for a more secure future.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Your Primary Financial Goal</h3>
+                     <div class="grid grid-cols-2 gap-4">
+                         <div>
+                            <label for="onboarding-goal-desc" class="block text-sm font-medium">Goal</label>
+                            <input type="text" id="onboarding-goal-desc" placeholder="e.g., Vacation" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label for="onboarding-goal-amount" class="block text-sm font-medium">Amount (€)</label>
+                            <input type="number" id="onboarding-goal-amount" placeholder="5000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                    </div>
+                </div>
+                <div id="onboarding-error" class="text-red-500 text-sm text-center h-4 mb-2"></div>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700">Start Tracking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App View -->
+    <div id="app-view" class="max-w-4xl mx-auto p-4 sm:p-6 hidden">
+         <header class="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mb-8 sm:mb-10">
+            <div class="text-center sm:text-left">
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Klaro</h1>
+                <p id="welcome-message" class="text-gray-600 text-sm">Welcome back!</p>
+            </div>
+            <div>
+                 <button id="settings-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0 3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                 </button>
+            </div>
+        </header>
+        
+        <main id="main-content" class="space-y-8">
+            <!-- Summary Section -->
+            <section id="summary" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 data-lang="total_income" class="font-semibold text-gray-500">Total Income</h3>
+                    <p id="total-income" class="text-2xl sm:text-3xl font-bold text-green-600 mt-2">€0.00</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 data-lang="total_expenses" class="font-semibold text-gray-500">Total Expenses</h3>
+                    <p id="total-expenses" class="text-2xl sm:text-3xl font-bold text-red-600 mt-2">€0.00</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 data-lang="balance" class="font-semibold text-gray-500">Balance</h3>
+                    <p id="balance" class="text-2xl sm:text-3xl font-bold text-indigo-600 mt-2">€0.00</p>
+                </div>
+            </section>
+
+            <!-- Custom Budget Rule Section -->
+            <section id="budget-rule" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <h2 data-lang="budget_breakdown" class="text-2xl font-bold mb-4">Your Budget Breakdown</h2>
+                <div class="space-y-5">
+                     <div>
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 id="needs-title" class="font-semibold text-lg">Needs (50%)</h4>
+                            <span id="needs-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4"><div id="needs-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                    </div>
+                     <div>
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 id="wants-title" class="font-semibold text-lg">Wants (30%)</h4>
+                            <span id="wants-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4"><div id="wants-bar" class="bg-purple-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                    </div>
+                     <div>
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 id="savings-title" class="font-semibold text-lg">Savings (20%)</h4>
+                            <span id="savings-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4"><div id="savings-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- AI Financial Plan Section -->
+             <section id="tips-section" class="bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500 p-4 rounded-r-lg hidden">
+                <h3 data-lang="ai_financial_plan" class="text-lg font-bold text-indigo-800 dark:text-indigo-300">Your AI Financial Plan</h3>
+                <div id="tips-content" class="mt-2 text-indigo-700 dark:text-indigo-400 text-sm"></div>
+            </section>
+            
+            <!-- Add Transaction Section -->
+            <section id="add-transaction" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 data-lang="add_transaction" class="text-2xl font-bold">Add Transaction</h2>
+                </div>
+                <p data-lang="motivational_quote" class="text-sm text-gray-500 mb-4 italic">"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."</p>
+                <form id="transaction-form">
+                     <div class="flex justify-center rounded-lg p-1 bg-indigo-100 mb-4">
+                        <button type="button" id="type-income" data-lang="income" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-active">Income</button>
+                        <button type="button" id="type-expense" data-lang="expense" class="w-full py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300 tab-inactive">Expense</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="relative">
+                            <label for="description" data-lang="description" class="block text-sm font-medium text-gray-700">Description</label>
+                            <input type="text" id="description" data-lang-placeholder="description_placeholder" placeholder="e.g., Salary, Groceries" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                             <label for="amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
+                            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div id="expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                        <div>
+                             <label for="rule-category" data-lang="budget_category" class="block text-sm font-medium text-gray-700">Budget Category</label>
+                             <select id="rule-category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="Needs" data-lang="need_option">Need</option>
+                                <option value="Wants" data-lang="want_option">Want</option>
+                                <option value="Savings" data-lang="saving_option">Saving</option>
+                             </select>
+                        </div>
+                         <div>
+                             <label for="category" data-lang="sub_category" class="block text-sm font-medium text-gray-700">Sub-Category</label>
+                             <select id="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <optgroup label="Needs"><option>Housing</option><option>Utilities</option><option>Groceries</option><option>Transport</option><option>Health</option><option>Debt Payments</option></optgroup>
+                                 <optgroup label="Wants"><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Hobbies</option><option>Subscriptions</option><option>Vacation</option></optgroup>
+                                <optgroup label="Savings"><option>Emergency Fund</option><option>Investments</option><option>Retirement</option></optgroup>
+                             </select>
+                        </div>
+                    </div>
+                    <div id="expense-helper-text" class="hidden">
+                        <p data-lang="check_categories_helper" class="text-xs text-gray-500 text-center mt-2">Please select the correct categories for your expense.</p>
+                    </div>
+                    <button type="submit" data-lang="add_transaction_btn" class="mt-4 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Add Transaction</button>
+                </form>
+            </section>
+            
+            <!-- Transaction History -->
+            <section id="transaction-history">
+                <h2 data-lang="recent_transactions" class="text-2xl font-bold mb-4">Recent Transactions</h2>
+                <div id="transaction-list" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                   <div id="empty-state" class="text-center p-8"><p data-lang="no_transactions" class="text-gray-500">No transactions yet for this month.</p></div>
+                </div>
+            </section>
+
+            <!-- Monthly Review Section -->
+            <section id="monthly-review-section" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 data-lang="monthly_review" class="text-2xl font-bold">Monthly Review</h2>
+                    <select id="month-selector" class="pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
+                </div>
+                <div id="monthly-review-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <h3 id="review-title" class="text-xl font-semibold mb-3"></h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between"><span data-lang="total_income">Total Income:</span><span id="review-income" class="font-medium"></span></div>
+                            <div class="flex justify-between"><span data-lang="total_expenses">Total Expenses:</span><span id="review-expenses" class="font-medium"></span></div>
+                            <div class="flex justify-between"><span data-lang="net_savings">Net Savings:</span><span id="review-savings" class="font-medium"></span></div>
+                        </div>
+                        <div id="review-ai-advice" class="mt-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg text-indigo-800 dark:text-indigo-300"></div>
+                    </div>
+                    <div>
+                        <canvas id="monthly-chart"></canvas>
+                    </div>
+                </div>
+                 <div id="no-review-data" class="text-center p-8 text-gray-500 hidden"><p data-lang="no_review_data">No data available for this month.</p></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-content bg-white w-11/12 sm:max-w-md mx-auto rounded-2xl shadow-lg z-50 p-6 transform -translate-y-64">
+            <div class="flex justify-between items-center pb-3">
+                <p data-lang="settings" class="text-2xl font-bold">Settings</p>
+                <button id="close-settings-modal" class="cursor-pointer z-50 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600">&times;</button>
+            </div>
+            
+            <div id="settings-content">
+                <h3 data-lang="appearance" class="text-lg font-semibold mb-2">Appearance</h3>
+                <div class="space-y-2">
+                    <label data-lang="theme" class="block text-sm font-medium">Theme</label>
+                    <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
+                        <button type="button" id="theme-light-btn" class="theme-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-theme="light" data-lang="light">Light</button>
+                        <button type="button" id="theme-dark-btn" class="theme-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-theme="dark" data-lang="dark">Dark</button>
+                    </div>
+                </div>
+                <div class="space-y-2 mt-4">
+                    <label data-lang="language" class="block text-sm font-medium">Language</label>
+                    <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
+                        <button type="button" id="lang-en-btn" class="lang-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-lang-set="en">English</button>
+                        <button type="button" id="lang-hr-btn" class="lang-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-lang-set="hr">Hrvatski</button>
+                    </div>
+                </div>
+                
+                <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-end">
+                     <button id="reset-app-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600">Reset App Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- App Config ---
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";
+        const apiKey = ""; // Canvas will provide this
+
+        // --- Translations ---
+        const translations = {
+            en: {
+                total_income: 'Total Income', total_expenses: 'Total Expenses', balance: 'Balance',
+                budget_breakdown: 'Your Budget Breakdown', needs: 'Needs', wants: 'Wants', savings: 'Savings',
+                ai_financial_plan: 'Your AI Financial Plan', add_transaction: 'Add Transaction',
+                motivational_quote: '"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."',
+                income: 'Income', expense: 'Expense', description: 'Description', description_placeholder: 'e.g., Salary, Groceries',
+                amount: 'Amount (€)', budget_category: 'Budget Category', need_option: 'Need', want_option: 'Want', saving_option: 'Saving',
+                sub_category: 'Sub-Category', check_categories_helper: 'Please select the correct categories for your expense.',
+                add_transaction_btn: 'Add Transaction', recent_transactions: 'Recent Transactions', no_transactions: 'No transactions yet for this month.',
+                monthly_review: 'Monthly Review', review_for: 'Review for', net_savings: 'Net Savings', no_review_data: 'No data available for this month.',
+                settings: 'Settings', customize_budget: 'Customize Your Budget Rule', set_financial_goal: 'Set Your Financial Goal',
+                goal: 'Goal', goal_placeholder: 'e.g., Vacation', save_settings: 'Save Settings', logout: 'Logout',
+                appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, '
+            },
+            hr: {
+                total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
+                budget_breakdown: 'Vaša Raspodjela Budžeta', needs: 'Potrebe', wants: 'Želje', savings: 'Štednja',
+                ai_financial_plan: 'Vaš AI Financijski Plan', add_transaction: 'Dodaj Transakciju',
+                motivational_quote: '"Uzmite 5 minuta dnevno za praćenje troškova. 5 minuta danas može drastično promijeniti vaše buduće ja."',
+                income: 'Prihod', expense: 'Trošak', description: 'Opis', description_placeholder: 'npr. Plaća, Namirnice',
+                amount: 'Iznos (€)', budget_category: 'Kategorija Budžeta', need_option: 'Potreba', want_option: 'Želja', saving_option: 'Štednja',
+                sub_category: 'Potkategorija', check_categories_helper: 'Molimo odaberite ispravne kategorije za vaš trošak.',
+                add_transaction_btn: 'Dodaj Transakciju', recent_transactions: 'Nedavne Transakcije', no_transactions: 'Nema transakcija za ovaj mjesec.',
+                monthly_review: 'Mjesečni Pregled', review_for: 'Pregled za', net_savings: 'Neto Ušteda', no_review_data: 'Nema podataka za ovaj mjesec.',
+                settings: 'Postavke', customize_budget: 'Prilagodite Svoje Pravilo Budžetiranja', set_financial_goal: 'Postavite Svoj Financijski Cilj',
+                goal: 'Cilj', goal_placeholder: 'npr. Putovanje', save_settings: 'Spremi Postavke', logout: 'Odjava',
+                appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, '
+            }
+        };
+
+        // --- DOM Elements ---
+        const onboardingView = document.getElementById('onboarding-view');
+        const appView = document.getElementById('app-view');
+        const onboardingForm = document.getElementById('onboarding-form');
+        const onboardingError = document.getElementById('onboarding-error');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const themeLightBtn = document.getElementById('theme-light-btn');
+        const themeDarkBtn = document.getElementById('theme-dark-btn');
+        const langEnBtn = document.getElementById('lang-en-btn');
+        const langHrBtn = document.getElementById('lang-hr-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const transactionForm = document.getElementById('transaction-form');
+        const descriptionInput = document.getElementById('description');
+        const ruleCategoryInput = document.getElementById('rule-category');
+        const categoryInput = document.getElementById('category');
+        const typeIncomeBtn = document.getElementById('type-income');
+        const typeExpenseBtn = document.getElementById('type-expense');
+        const expenseFieldsWrapper = document.getElementById('expense-fields-wrapper');
+        const expenseHelperText = document.getElementById('expense-helper-text');
+        const transactionListEl = document.getElementById('transaction-list');
+        const emptyState = document.getElementById('empty-state');
+        const tipsSection = document.getElementById('tips-section');
+        const tipsContent = document.getElementById('tips-content');
+        const totalIncomeEl = document.getElementById('total-income'), totalExpensesEl = document.getElementById('total-expenses'), balanceEl = document.getElementById('balance');
+        const needsTitleEl = document.getElementById('needs-title'), wantsTitleEl = document.getElementById('wants-title'), savingsTitleEl = document.getElementById('savings-title');
+        const needsSummaryEl = document.getElementById('needs-summary'), wantsSummaryEl = document.getElementById('wants-summary'), savingsSummaryEl = document.getElementById('savings-summary');
+        const needsBarEl = document.getElementById('needs-bar'), wantsBarEl = document.getElementById('wants-bar'), savingsBarEl = document.getElementById('savings-bar');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsModalBtn = document.getElementById('close-settings-modal');
+        const monthlyReviewSection = document.getElementById('monthly-review-section');
+        const monthSelector = document.getElementById('month-selector');
+        const monthlyReviewContent = document.getElementById('monthly-review-content');
+        const noReviewData = document.getElementById('no-review-data');
+        const reviewTitle = document.getElementById('review-title');
+        const reviewIncome = document.getElementById('review-income');
+        const reviewExpenses = document.getElementById('review-expenses');
+        const reviewSavings = document.getElementById('review-savings');
+        const reviewAIAdvice = document.getElementById('review-ai-advice');
+        const monthlyChartCanvas = document.getElementById('monthly-chart');
+        let monthlyChart = null;
+        const resetAppBtn = document.getElementById('reset-app-btn');
+
+
+        // --- App State ---
+        let userProfile = null;
+        let transactions = [];
+        let currentTransactionType = 'income';
+
+        // --- Data Management (localStorage) ---
+        function loadData() {
+            try {
+                const storedProfile = localStorage.getItem('klaroUserProfile');
+                const storedTransactions = localStorage.getItem('klaroTransactions');
+                if (storedProfile) {
+                    userProfile = JSON.parse(storedProfile);
+                    transactions = storedTransactions ? JSON.parse(storedTransactions) : [];
+                    // Ensure transactions have Date objects
+                    transactions.forEach(t => {
+                        if (t.timestamp) t.timestamp = new Date(t.timestamp);
+                    });
+                    return true;
+                }
+            } catch (e) {
+                console.error("Failed to load data from localStorage", e);
+            }
+            return false;
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('klaroUserProfile', JSON.stringify(userProfile));
+                localStorage.setItem('klaroTransactions', JSON.stringify(transactions));
+            } catch (e) {
+                console.error("Failed to save data to localStorage", e);
+            }
+        }
+
+        // --- Initialization ---
+        function initializeApp() {
+            if (loadData()) {
+                onboardingView.classList.add('hidden');
+                appView.classList.remove('hidden');
+                
+                applyTheme(userProfile.settings.theme);
+                applyLanguage(userProfile.settings.language);
+                renderApp();
+            } else {
+                appView.classList.add('hidden');
+                onboardingView.classList.remove('hidden');
+            }
+        }
+
+        function renderApp() {
+            if (!userProfile) return;
+
+            let welcomeText;
+            if (userProfile.isFirstLogin) {
+                welcomeText = translations[userProfile.settings.language]?.welcome || 'Welcome, ';
+                userProfile.isFirstLogin = false;
+                saveData();
+            } else {
+                welcomeText = translations[userProfile.settings.language]?.welcome_back || 'Welcome back, ';
+            }
+            
+            welcomeMessage.textContent = welcomeText + (userProfile.name.split(' ')[0] || '');
+            renderTransactions();
+            updateSummaryAndBudget();
+            setupMonthSelector();
+        }
+
+        // --- Onboarding Logic ---
+        const onboardingSliders = {
+            needs: document.getElementById('onboarding-needs-slider'),
+            wants: document.getElementById('onboarding-wants-slider'),
+            savings: document.getElementById('onboarding-savings-slider')
+        };
+        const onboardingSliderVals = {
+            needs: document.getElementById('onboarding-needs-slider-val'),
+            wants: document.getElementById('onboarding-wants-slider-val'),
+            savings: document.getElementById('onboarding-savings-slider-val')
+        };
+        const onboardingSliderTotal = document.getElementById('onboarding-slider-total');
+
+        function updateOnboardingSliderTotal() {
+            const total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
+            onboardingSliderTotal.textContent = `Total: ${total}%`;
+            onboardingSliderTotal.style.color = total === 100 ? '#16a34a' : '#dc2626';
+        }
+
+        Object.values(onboardingSliders).forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const key = e.target.id.split('-')[1];
+                onboardingSliderVals[key].textContent = e.target.value;
+                updateOnboardingSliderTotal();
+            });
+        });
+
+        onboardingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            onboardingError.textContent = '';
+            const total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
+            if (total !== 100) {
+                onboardingError.textContent = 'Total must be exactly 100%.';
+                return;
+            }
+            
+            userProfile = {
+                name: document.getElementById('onboarding-name').value,
+                age: document.getElementById('onboarding-age').value,
+                isFirstLogin: true,
+                settings: {
+                    budget: {
+                        needs: parseInt(onboardingSliders.needs.value),
+                        wants: parseInt(onboardingSliders.wants.value),
+                        savings: parseInt(onboardingSliders.savings.value),
+                    },
+                    goal: {
+                        description: document.getElementById('onboarding-goal-desc').value.trim(),
+                        amount: parseFloat(document.getElementById('onboarding-goal-amount').value) || 0,
+                    },
+                    theme: 'light',
+                    language: 'en'
+                }
+            };
+            
+            transactions = [];
+            saveData();
+            initializeApp();
+        });
+
+
+        // --- Appearance & Language ---
+        function applyTheme(theme) {
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            themeLightBtn.classList.toggle('setting-btn-active', theme === 'light');
+            themeDarkBtn.classList.toggle('setting-btn-active', theme === 'dark');
+        }
+
+        function applyLanguage(lang) {
+             document.querySelectorAll('[data-lang]').forEach(el => {
+                const key = el.dataset.lang;
+                const text = translations[lang]?.[key] || translations['en'][key];
+                if(text) el.textContent = text;
+            });
+             document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+                const key = el.dataset.langPlaceholder;
+                const text = translations[lang]?.[key] || translations['en'][key];
+                if(text) el.placeholder = text;
+            });
+            langEnBtn.classList.toggle('setting-btn-active', lang === 'en');
+            langHrBtn.classList.toggle('setting-btn-active', lang === 'hr');
+            updateSummaryAndBudget();
+        }
+
+        async function saveAppearanceSettings() {
+            if (!userProfile) return;
+            userProfile.settings.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            userProfile.settings.language = langEnBtn.classList.contains('setting-btn-active') ? 'en' : 'hr';
+            saveData();
+        }
+
+        themeLightBtn.addEventListener('click', () => {
+            userProfile.settings.theme = 'light';
+            applyTheme('light');
+            saveData();
+        });
+        themeDarkBtn.addEventListener('click', () => {
+            userProfile.settings.theme = 'dark';
+            applyTheme('dark');
+            saveData();
+        });
+        langEnBtn.addEventListener('click', () => {
+            userProfile.settings.language = 'en';
+            applyLanguage('en');
+            saveData();
+        });
+        langHrBtn.addEventListener('click', () => {
+            userProfile.settings.language = 'hr';
+            applyLanguage('hr');
+            saveData();
+        });
+
+        // --- Monthly Review, AI Functions, UI Listeners, etc. ---
+        function setupMonthSelector() {
+            const monthSet = new Set();
+            transactions.forEach(t => {
+                if (t.timestamp) {
+                    const date = t.timestamp;
+                    const monthKey = `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
+                    monthSet.add(monthKey);
+                }
+            });
+
+            if (monthSet.size === 0) {
+                monthlyReviewSection.classList.add('hidden');
+                return;
+            }
+
+            monthlyReviewSection.classList.remove('hidden');
+            const currentSelection = monthSelector.value;
+            monthSelector.innerHTML = '';
+            const sortedMonths = Array.from(monthSet).sort().reverse();
+            
+            sortedMonths.forEach(monthKey => {
+                const [year, monthIndex] = monthKey.split('-');
+                const date = new Date(year, monthIndex);
+                const option = document.createElement('option');
+                option.value = monthKey;
+                option.textContent = date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' });
+                monthSelector.appendChild(option);
+            });
+            
+            if (currentSelection && monthSet.has(currentSelection)) {
+                monthSelector.value = currentSelection;
+            } else {
+                monthSelector.value = sortedMonths[0] || '';
+            }
+            renderMonthlyReview(monthSelector.value);
+        }
+
+        monthSelector.addEventListener('change', () => renderMonthlyReview(monthSelector.value));
+
+        async function renderMonthlyReview(monthKey) {
+             if (!monthKey) {
+                noReviewData.classList.remove('hidden');
+                monthlyReviewContent.classList.add('hidden');
+                return;
+            }
+            const [year, monthIndex] = monthKey.split('-').map(Number);
+            
+            const monthlyTransactions = transactions.filter(t => {
+                if(!t.timestamp) return false;
+                const date = t.timestamp;
+                return date.getFullYear() === year && date.getMonth() === monthIndex;
+            });
+
+            if (monthlyTransactions.length === 0) {
+                noReviewData.classList.remove('hidden');
+                monthlyReviewContent.classList.add('hidden');
+                return;
+            }
+
+            noReviewData.classList.add('hidden');
+            monthlyReviewContent.classList.remove('hidden');
+
+            const date = new Date(year, monthIndex);
+            const reviewForText = translations[userProfile.settings.language].review_for || 'Review for';
+            reviewTitle.textContent = `${reviewForText} ${date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' })}`;
+
+            const income = monthlyTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expenses = monthlyTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const spentOnNeeds = monthlyTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
+            const spentOnWants = monthlyTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
+            const amountSaved = monthlyTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+            const net = income - expenses;
+
+            reviewIncome.textContent = formatCurrency(income);
+            reviewExpenses.textContent = formatCurrency(expenses);
+            reviewSavings.textContent = formatCurrency(net);
+            reviewSavings.className = net >= 0 ? 'font-medium text-green-600' : 'font-medium text-red-600';
+            
+            const chartData = {
+                labels: [translations[userProfile.settings.language].needs, translations[userProfile.settings.language].wants, translations[userProfile.settings.language].savings],
+                datasets: [{
+                    data: [spentOnNeeds, spentOnWants, amountSaved],
+                    backgroundColor: ['#2563eb', '#9333ea', '#16a34a'],
+                    hoverOffset: 4
+                }]
+            };
+
+            if (monthlyChart) {
+                monthlyChart.destroy();
+            }
+            monthlyChart = new Chart(monthlyChartCanvas, {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: userProfile.settings.theme === 'dark' ? '#f9fafb' : '#6b7280' } },
+                        title: { display: false }
+                    }
+                }
+            });
+
+            const monthlyExpensesList = monthlyTransactions.filter(t => t.type === 'expense');
+            const numberOfExpenses = monthlyExpensesList.length;
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonthIndex = now.getMonth();
+            const isPastMonth = year < currentYear || (year === currentYear && monthIndex < currentMonthIndex);
+
+            if (income > 0 && (numberOfExpenses >= 10 || isPastMonth)) {
+                reviewAIAdvice.innerHTML = '<p>Generating AI analysis...</p>';
+                const advice = await getAIMonthlyAdvice({income, spentOnNeeds, spentOnWants, amountSaved, month: date.toLocaleString('default', { month: 'long' })});
+                reviewAIAdvice.innerHTML = advice;
+            } else if (income === 0) {
+                 reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Add an income for this month to get a full analysis.</p>`;
+            } else {
+                reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Enter at least ${10 - numberOfExpenses} more expense(s) this month to receive your personalized AI analysis.</p>`;
+            }
+        }
+
+        async function getAIMonthlyAdvice(data) {
+             const prompt = `Here is my financial summary for ${data.month}:
+            - Total Income: ${formatCurrency(data.income)}
+            - Spending on Needs: ${formatCurrency(data.spentOnNeeds)}
+            - Spending on Wants: ${formatCurrency(data.spentOnWants)}
+            - Total Saved (from transactions categorized as savings): ${formatCurrency(data.amountSaved)}
+            - My budget rule is roughly: Needs (${userProfile.settings.budget.needs}%), Wants (${userProfile.settings.budget.wants}%), Savings (${userProfile.settings.budget.savings}%)
+            - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}".
+
+            Provide a concise, motivating report. Start by highlighting one positive achievement. Then, gently point out one area for potential improvement with a practical tip. End with an encouraging sentence for the month ahead.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: `You are a friendly and encouraging financial coach. Your core philosophy is 'Save for your future self'. Your advice must be in ${userProfile.settings.language === 'hr' ? 'Croatian' : 'English'}. Respond with simple HTML paragraphs (<p>).` }] }
+            };
+             try {
+                const response = await fetch(GEMINI_API_URL + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error('API Error');
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "<p>Could not generate advice at this time.</p>";
+            } catch (error) {
+                console.error("AI Monthly Advice failed:", error);
+                return "<p>Error generating your financial advice.</p>";
+            }
+        }
+
+        async function getAIFinancialPlan() {
+             if (!userProfile.settings.goal.description || !userProfile.settings.goal.amount || userProfile.settings.goal.amount <= 0) {
+                 tipsSection.classList.add('hidden');
+                 return;
+             }
+            const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+            if (totalIncome === 0) {
+                tipsSection.classList.add('hidden');
+                return;
+            }
+
+            tipsSection.classList.remove('hidden');
+            tipsContent.innerHTML = '<p>Generating your personalized plan...</p>';
+            const spentOnNeeds = transactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
+            const spentOnWants = transactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
+            const amountSaved = transactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+
+            const prompt = `User's financial data for the current period:
+            - Total Income: ${formatCurrency(totalIncome)}
+            - Spending on Needs: ${formatCurrency(spentOnNeeds)} (${Math.round(spentOnNeeds/totalIncome*100)}%)
+            - Spending on Wants: ${formatCurrency(spentOnWants)} (${Math.round(spentOnWants/totalIncome*100)}%)
+            - Total Saved: ${formatCurrency(amountSaved)}
+            - Financial Goal: Save ${formatCurrency(userProfile.settings.goal.amount)} for "${userProfile.settings.goal.description}".
+            Provide a short, actionable financial plan (2-3 bullet points) to help the user reach their goal. Suggest specific, realistic adjustments.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: `You are a world-class financial advisor with a philosophy of 'saving for your future self'. Your advice is realistic, motivating, and framed around helping the user achieve long-term well-being and their goals. Respond in a clear, encouraging tone in ${userProfile.settings.language === 'hr' ? 'Croatian' : 'English'} with HTML list items (<li>).` }] }
+            };
+             try {
+                const response = await fetch(GEMINI_API_URL + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error('API Error');
+                const result = await response.json();
+                const plan = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (plan) { tipsContent.innerHTML = `<ul class="list-disc list-inside space-y-1">${plan}</ul>`; } 
+                else { tipsContent.textContent = "Could not generate a plan at this time."; }
+            } catch (error) {
+                console.error("AI Plan generation failed:", error);
+                tipsContent.textContent = "Error generating your financial plan.";
+            }
+        }
+
+        function setTransactionType(type) {
+            currentTransactionType = type;
+            typeIncomeBtn.classList.toggle('tab-active', type === 'income');
+            typeIncomeBtn.classList.toggle('tab-inactive', type !== 'income');
+            typeExpenseBtn.classList.toggle('tab-active', type === 'expense');
+            typeExpenseBtn.classList.toggle('tab-inactive', type !== 'expense');
+            expenseFieldsWrapper.classList.toggle('hidden', type === 'income');
+            expenseHelperText.classList.toggle('hidden', type === 'income');
+        }
+
+        typeIncomeBtn.addEventListener('click', () => setTransactionType('income'));
+        typeExpenseBtn.addEventListener('click', () => setTransactionType('expense'));
+
+        transactionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const description = descriptionInput.value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (!description || isNaN(amount) || amount <= 0) return;
+
+            const newTransaction = { 
+                id: Date.now().toString(),
+                type: currentTransactionType, 
+                description, 
+                amount, 
+                timestamp: new Date()
+            };
+            if (currentTransactionType === 'expense') {
+                newTransaction.category = categoryInput.value;
+                newTransaction.ruleCategory = ruleCategoryInput.value;
+            }
+            
+            transactions.unshift(newTransaction);
+            saveData();
+            
+            if (currentTransactionType === 'income') { setTransactionType('expense'); }
+            
+            // Manually reset only description and amount
+            descriptionInput.value = '';
+            document.getElementById('amount').value = '';
+
+            descriptionInput.focus();
+            renderApp();
+        });
+
+        transactionListEl.addEventListener('click', (e) => {
+            const deleteButton = e.target.closest('.delete-btn');
+            if (deleteButton) { 
+                const transactionId = deleteButton.dataset.id;
+                transactions = transactions.filter(t => t.id !== transactionId);
+                saveData();
+                renderApp();
+            }
+        });
+
+        const formatCurrency = (value) => new Intl.NumberFormat(userProfile.settings.language === 'hr' ? 'hr-HR' : 'de-DE', { style: 'currency', currency: 'EUR' }).format(value);
+
+        function renderTransactions() {
+            const now = new Date();
+            const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
+
+            if (currentMonthTransactions.length === 0) {
+                emptyState.style.display = 'block';
+                transactionListEl.innerHTML = '';
+                transactionListEl.appendChild(emptyState);
+                return;
+            }
+            emptyState.style.display = 'none';
+            transactionListEl.innerHTML = currentMonthTransactions.map(t => {
+                const isIncome = t.type === 'income';
+                return `
+                    <div class="flex items-center p-4 border-b border-gray-200 last:border-b-0">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${isIncome ? 'bg-green-100' : (t.ruleCategory === 'Savings' ? 'bg-green-100' : 'bg-red-100')} dark:bg-opacity-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${isIncome ? 'text-green-600' : (t.ruleCategory === 'Savings' ? 'text-green-600' : 'text-red-600')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isIncome ? 'M12 4v16m8-8H4' : 'M20 12H4'}" /></svg>
+                        </div>
+                        <div class="flex-1 min-w-0 mx-4">
+                            <p class="font-semibold text-gray-800 truncate">${t.description}</p>
+                            <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
+                        </div>
+                        <div class="text-right flex items-center">
+                            <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${formatCurrency(t.amount)}</p>
+                            <button data-id="${t.id}" class="delete-btn p-1 ml-2 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateSummaryAndBudget() {
+            if (!userProfile) return;
+            const now = new Date();
+            const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+            const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
+            const totalIncome = currentMonthTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+            const totalExpenses = currentMonthTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+            
+            totalIncomeEl.textContent = formatCurrency(totalIncome);
+            totalExpensesEl.textContent = formatCurrency(totalExpenses);
+            balanceEl.textContent = formatCurrency(totalIncome - totalExpenses);
+
+            const needsBudget = totalIncome * (userProfile.settings.budget.needs / 100);
+            const wantsBudget = totalIncome * (userProfile.settings.budget.wants / 100);
+            const savingsTarget = totalIncome * (userProfile.settings.budget.savings / 100);
+            const spentOnNeeds = currentMonthTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
+            const spentOnWants = currentMonthTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
+            const amountSaved = currentMonthTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+
+            needsTitleEl.textContent = `${translations[userProfile.settings.language].needs} (${userProfile.settings.budget.needs}%)`;
+            wantsTitleEl.textContent = `${translations[userProfile.settings.language].wants} (${userProfile.settings.budget.wants}%)`;
+            savingsTitleEl.textContent = `${translations[userProfile.settings.language].savings} (${userProfile.settings.budget.savings}%)`;
+
+            needsSummaryEl.textContent = `${formatCurrency(spentOnNeeds)} / ${formatCurrency(needsBudget)}`;
+            wantsSummaryEl.textContent = `${formatCurrency(spentOnWants)} / ${formatCurrency(wantsBudget)}`;
+            savingsSummaryEl.textContent = `${formatCurrency(amountSaved)} / ${formatCurrency(savingsTarget)}`;
+            
+            needsBarEl.style.width = `${needsBudget > 0 ? Math.min((spentOnNeeds / needsBudget) * 100, 100) : 0}%`;
+            wantsBarEl.style.width = `${wantsBudget > 0 ? Math.min((spentOnWants / wantsBudget) * 100, 100) : 0}%`;
+            savingsBarEl.style.width = `${savingsTarget > 0 ? Math.min((amountSaved / savingsTarget) * 100, 100) : 0}%`;
+
+            getAIFinancialPlan();
+        }
+
+        const toggleModal = () => {
+            settingsModal.classList.toggle('hidden');
+            if (!settingsModal.classList.contains('hidden')) {
+                settingsModal.classList.add('modal-active');
+                setTimeout(() => { settingsModal.querySelector('.modal-content').style.transform = 'translateY(0)'; }, 10);
+            } else {
+                 settingsModal.querySelector('.modal-content').style.transform = 'translateY(-16rem)';
+                 setTimeout(() => settingsModal.classList.remove('modal-active'), 250);
+            }
+        };
+
+        settingsBtn.addEventListener('click', toggleModal);
+        closeSettingsModalBtn.addEventListener('click', toggleModal);
+
+        resetAppBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all app data? This cannot be undone.')) {
+                localStorage.removeItem('klaroUserProfile');
+                localStorage.removeItem('klaroTransactions');
+                window.location.reload();
+            }
+        });
+
+        // --- Initial Load ---
+        initializeApp();
+    </script>
+</body>
+</html>
+
