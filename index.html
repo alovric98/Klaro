@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klaro - Your Financial Clarity</title>
+    <title>Claro - Your Financial Clarity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -93,12 +93,21 @@
     <!-- Onboarding View -->
     <div id="onboarding-view" class="max-w-xl mx-auto p-6 min-h-screen flex items-center hidden">
         <div class="w-full bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-            <h1 class="text-3xl font-bold text-center mb-2">Welcome to Klaro</h1>
+            <h1 class="text-3xl font-bold text-center mb-2">Welcome to Claro</h1>
             <p class="text-center text-gray-600 mb-6">Let's set up your financial profile to get started.</p>
             <form id="onboarding-form" class="space-y-6">
-                <div>
-                    <label for="onboarding-name" class="block text-sm font-medium">Full Name</label>
-                    <input type="text" id="onboarding-name" placeholder="e.g., Ivan Horvat" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="onboarding-name" class="block text-sm font-medium">Full Name</label>
+                        <input type="text" id="onboarding-name" placeholder="e.g., Ivan Horvat" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                     <div>
+                        <label for="onboarding-currency" data-lang="currency" class="block text-sm font-medium">Currency</label>
+                        <select id="onboarding-currency" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <option value="EUR">EUR (€)</option>
+                            <option value="USD">USD ($)</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div>
@@ -117,20 +126,29 @@
                             <input id="onboarding-savings-slider" type="range" min="0" max="100" value="20" class="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer">
                         </div>
                         <p id="onboarding-slider-total" class="text-sm font-bold text-center text-gray-700">Total: 100%</p>
-                        <p class="text-xs text-gray-500 text-center mt-4 italic">Experts recommend setting aside **at least 10%** for savings and investments. Remember, even a small amount like €20 helps build a habit for a more secure future.</p>
+                        <p id="onboarding-habit-tip" class="text-xs text-gray-500 text-center mt-4 italic"></p>
                     </div>
                 </div>
 
                 <div>
                     <h3 class="text-lg font-semibold mb-2">Your Primary Financial Goal</h3>
-                     <div class="grid grid-cols-2 gap-4">
+                    <p class="text-xs text-gray-500 mb-2 italic">A clear goal will help the AI provide you with a more accurate financial plan.</p>
+                     <div class="grid grid-cols-1 gap-4">
                          <div>
-                            <label for="onboarding-goal-desc" class="block text-sm font-medium">Goal</label>
-                            <input type="text" id="onboarding-goal-desc" placeholder="e.g., Vacation" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <label for="onboarding-goal-select" class="block text-sm font-medium">Goal</label>
+                            <select id="onboarding-goal-select" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option data-lang="goal_wealth">Build Wealth</option>
+                                <option data-lang="goal_safety">Create a Safety Net</option>
+                                <option data-lang="goal_trip">Save for a Dream Trip</option>
+                                <option data-lang="goal_car">Save for a New Car</option>
+                                <option data-lang="goal_home">Save for a Home</option>
+                                <option value="custom" data-lang="goal_custom">Custom...</option>
+                            </select>
+                            <input type="text" id="onboarding-goal-desc" placeholder="e.g., Trip to Italy" class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md hidden">
                         </div>
                         <div>
-                            <label for="onboarding-goal-amount" class="block text-sm font-medium">Amount (€)</label>
-                            <input type="number" id="onboarding-goal-amount" placeholder="5000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <label for="onboarding-goal-amount" data-lang="amount" class="block text-sm font-medium">Amount</label>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="onboarding-goal-amount" placeholder="5000" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
                         </div>
                     </div>
                 </div>
@@ -144,7 +162,7 @@
     <div id="app-view" class="max-w-4xl mx-auto p-4 sm:p-6 hidden">
          <header class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Klaro</h1>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Claro</h1>
                 <p id="welcome-message" class="text-gray-600 text-sm">Welcome back!</p>
             </div>
             <div>
@@ -154,18 +172,18 @@
             </div>
         </header>
         
-        <main id="main-content" class="space-y-6">
+        <main id="main-content" class="space-y-5">
             <!-- Summary Section -->
             <section id="summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                 <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="total_income" class="font-semibold text-gray-500">Total Income</h3>
                     <p id="total-income" class="text-2xl sm:text-3xl font-bold text-green-600 mt-2">€0.00</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="total_expenses" class="font-semibold text-gray-500">Total Expenses</h3>
                     <p id="total-expenses" class="text-2xl sm:text-3xl font-bold text-red-600 mt-2">€0.00</p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="balance" class="font-semibold text-gray-500">Balance</h3>
                     <p id="balance" class="text-2xl sm:text-3xl font-bold text-indigo-600 mt-2">€0.00</p>
                 </div>
@@ -176,23 +194,23 @@
                 <h2 data-lang="budget_breakdown" class="text-2xl font-bold mb-4">Your Budget Breakdown</h2>
                 <div class="space-y-5">
                      <div>
-                        <div class="flex justify-between items-baseline mb-1">
+                        <div class="flex justify-between items-center mb-1">
                             <h4 id="needs-title" class="font-semibold text-lg">Needs (50%)</h4>
-                            <span id="needs-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                            <span id="needs-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="needs-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
                     </div>
                      <div>
-                        <div class="flex justify-between items-baseline mb-1">
+                        <div class="flex justify-between items-center mb-1">
                             <h4 id="wants-title" class="font-semibold text-lg">Wants (30%)</h4>
-                            <span id="wants-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                            <span id="wants-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="wants-bar" class="bg-purple-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
                     </div>
                      <div>
-                        <div class="flex justify-between items-baseline mb-1">
+                        <div class="flex justify-between items-center mb-1">
                             <h4 id="savings-title" class="font-semibold text-lg">Savings (20%)</h4>
-                            <span id="savings-summary" class="text-sm font-medium text-gray-600">€0 / €0</span>
+                            <span id="savings-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="savings-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
                     </div>
@@ -219,8 +237,8 @@
                             <input type="text" id="description" data-lang-placeholder="description_placeholder" placeholder="e.g., Salary, Groceries" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div>
-                            <label for="amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
-                            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <label for="amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                            <input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="amount" placeholder="0.00" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                     </div>
                     <div id="expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
@@ -290,8 +308,8 @@
                         <input type="text" id="edit-description" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                     <div>
-                         <label for="edit-amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount (€)</label>
-                        <input type="number" id="edit-amount" step="0.01" min="0.01" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                         <label for="edit-amount" data-lang="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                        <input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" id="edit-amount" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
                 </div>
                 <div id="edit-expense-fields-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -340,6 +358,13 @@
                     </div>
                 </div>
                  <div class="space-y-2 mt-4">
+                    <label data-lang="currency" class="block text-sm font-medium">Currency</label>
+                    <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
+                        <button type="button" id="currency-eur-btn" class="currency-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-currency="EUR">EUR (€)</button>
+                        <button type="button" id="currency-usd-btn" class="currency-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-currency="USD">USD ($)</button>
+                    </div>
+                </div>
+                 <div class="space-y-2 mt-4">
                     <label data-lang="privacy" class="block text-sm font-medium">Privacy</label>
                     <div class="flex rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
                         <button type="button" id="privacy-on-btn" class="privacy-btn w-full py-2 px-4 rounded-md text-sm font-semibold dark:text-gray-300" data-privacy-mode="true" data-lang="privacy_on">On</button>
@@ -354,747 +379,890 @@
         </div>
     </div>
 
-    <script type="module">
-        // --- App Config ---
-        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";
-        const apiKey = ""; // This will be provided by the Canvas environment automatically.
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- App Config ---
+            const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";
+            const apiKey = ""; // This will be provided by the Canvas environment automatically.
 
-        // --- Translations ---
-        const translations = {
-            en: {
-                total_income: 'Total Income', total_expenses: 'Total Expenses', balance: 'Balance',
-                budget_breakdown: 'Your Budget Breakdown', needs: 'Needs', wants: 'Wants', savings: 'Savings',
-                ai_financial_plan: 'Your AI Financial Plan', add_transaction: 'Add Transaction',
-                motivational_quote: '"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."',
-                income: 'Income', expense: 'Expense', description: 'Description', description_placeholder: 'e.g., Salary, Groceries',
-                amount: 'Amount (€)', budget_category: 'Budget Category', need_option: 'Need', want_option: 'Want', saving_option: 'Saving',
-                sub_category: 'Sub-Category', check_categories_helper: 'Please select the correct categories for your expense.',
-                add_transaction_btn: 'Add Transaction', recent_transactions: 'Recent Transactions', no_transactions: 'No transactions yet for this month.',
-                monthly_review: 'Monthly Review', review_for: 'Review for', net_savings: 'Net Savings', no_review_data: 'No data available for this month.',
-                settings: 'Settings', customize_budget: 'Customize Your Budget Rule', set_financial_goal: 'Set Your Financial Goal',
-                goal: 'Goal', goal_placeholder: 'e.g., Vacation', save_settings: 'Save Settings', logout: 'Logout',
-                appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, ',
-                privacy: 'Privacy', hide_amounts: 'Hide amounts', edit_transaction: 'Edit Transaction', save_changes_btn: 'Save Changes',
-                set_goal_prompt: 'Set a financial goal in your settings to get a personalized AI plan!',
-                privacy_on: 'On', privacy_off: 'Off'
-            },
-            hr: {
-                total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
-                budget_breakdown: 'Vaša Raspodjela Budžeta', needs: 'Potrebe', wants: 'Želje', savings: 'Štednja',
-                ai_financial_plan: 'Vaš AI Financijski Plan', add_transaction: 'Dodaj Transakciju',
-                motivational_quote: '"Uzmite 5 minuta dnevno za praćenje troškova. 5 minuta danas može drastično promijeniti vaše buduće ja."',
-                income: 'Prihod', expense: 'Trošak', description: 'Opis', description_placeholder: 'npr. Plaća, Namirnice',
-                amount: 'Iznos (€)', budget_category: 'Kategorija Budžeta', need_option: 'Potreba', want_option: 'Želja', saving_option: 'Štednja',
-                sub_category: 'Potkategorija', check_categories_helper: 'Molimo odaberite ispravne kategorije za vaš trošak.',
-                add_transaction_btn: 'Dodaj Transakciju', recent_transactions: 'Nedavne Transakcije', no_transactions: 'Nema transakcija za ovaj mjesec.',
-                monthly_review: 'Mjesečni Pregled', review_for: 'Pregled za', net_savings: 'Neto Ušteda', no_review_data: 'Nema podataka za ovaj mjesec.',
-                settings: 'Postavke', customize_budget: 'Prilagodite Svoje Pravilo Budžetiranja', set_financial_goal: 'Postavite Svoj Financijski Cilj',
-                goal: 'Cilj', goal_placeholder: 'npr. Putovanje', save_settings: 'Spremi Postavke', logout: 'Odjava',
-                appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, ',
-                privacy: 'Privatnost', hide_amounts: 'Sakrij iznose', edit_transaction: 'Uredi Transakciju', save_changes_btn: 'Spremi Promjene',
-                set_goal_prompt: 'Postavite financijski cilj u postavkama kako biste dobili personalizirani AI plan!',
-                privacy_on: 'Uključeno', privacy_off: 'Isključeno'
-            }
-        };
-        
-        const subCategoryMap = {
-            Needs: ['Housing', 'Utilities', 'Groceries', 'Transport', 'Health', 'Debt Payments'],
-            Wants: ['Dining Out', 'Entertainment', 'Shopping', 'Hobbies', 'Subscriptions', 'Vacation'],
-            Savings: ['Emergency Fund', 'Investments', 'Retirement']
-        };
-
-        // --- DOM Elements ---
-        const onboardingView = document.getElementById('onboarding-view');
-        const appView = document.getElementById('app-view');
-        const onboardingForm = document.getElementById('onboarding-form');
-        const onboardingError = document.getElementById('onboarding-error');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const themeLightBtn = document.getElementById('theme-light-btn');
-        const themeDarkBtn = document.getElementById('theme-dark-btn');
-        const langEnBtn = document.getElementById('lang-en-btn');
-        const langHrBtn = document.getElementById('lang-hr-btn');
-        const settingsBtn = document.getElementById('settings-btn');
-        const transactionForm = document.getElementById('transaction-form');
-        const descriptionInput = document.getElementById('description');
-        const ruleCategoryInput = document.getElementById('rule-category');
-        const categoryInput = document.getElementById('category');
-        const typeIncomeBtn = document.getElementById('type-income');
-        const typeExpenseBtn = document.getElementById('type-expense');
-        const expenseFieldsWrapper = document.getElementById('expense-fields-wrapper');
-        const transactionListEl = document.getElementById('transaction-list');
-        const emptyState = document.getElementById('empty-state');
-        const tipsSection = document.getElementById('tips-section');
-        const tipsContent = document.getElementById('tips-content');
-        const totalIncomeEl = document.getElementById('total-income'), totalExpensesEl = document.getElementById('total-expenses'), balanceEl = document.getElementById('balance');
-        const needsTitleEl = document.getElementById('needs-title'), wantsTitleEl = document.getElementById('wants-title'), savingsTitleEl = document.getElementById('savings-title');
-        const needsSummaryEl = document.getElementById('needs-summary'), wantsSummaryEl = document.getElementById('wants-summary'), savingsSummaryEl = document.getElementById('savings-summary');
-        const needsBarEl = document.getElementById('needs-bar'), wantsBarEl = document.getElementById('wants-bar'), savingsBarEl = document.getElementById('savings-bar');
-        const settingsModal = document.getElementById('settings-modal');
-        const closeSettingsModalBtn = document.getElementById('close-settings-modal');
-        const monthlyReviewSection = document.getElementById('monthly-review-section');
-        const monthSelector = document.getElementById('month-selector');
-        const monthlyReviewContent = document.getElementById('monthly-review-content');
-        const noReviewData = document.getElementById('no-review-data');
-        const reviewTitle = document.getElementById('review-title');
-        const reviewIncome = document.getElementById('review-income');
-        const reviewExpenses = document.getElementById('review-expenses');
-        const reviewSavings = document.getElementById('review-savings');
-        const reviewAIAdvice = document.getElementById('review-ai-advice');
-        const monthlyChartCanvas = document.getElementById('monthly-chart');
-        let monthlyChart = null;
-        const resetAppBtn = document.getElementById('reset-app-btn');
-        const privacyOnBtn = document.getElementById('privacy-on-btn');
-        const privacyOffBtn = document.getElementById('privacy-off-btn');
-        
-        // Edit Modal Elements
-        const editTransactionModal = document.getElementById('edit-transaction-modal');
-        const closeEditTransactionModalBtn = document.getElementById('close-edit-transaction-modal');
-        const editTransactionForm = document.getElementById('edit-transaction-form');
-        const editTransactionIdInput = document.getElementById('edit-transaction-id');
-        const editDescriptionInput = document.getElementById('edit-description');
-        const editAmountInput = document.getElementById('edit-amount');
-        const editRuleCategoryInput = document.getElementById('edit-rule-category');
-        const editCategoryInput = document.getElementById('edit-category');
-        const editExpenseFieldsWrapper = document.getElementById('edit-expense-fields-wrapper');
-
-
-        // --- App State ---
-        let userProfile = null;
-        let transactions = [];
-        let currentTransactionType = 'income';
-
-        // --- Data Management (localStorage) ---
-        function loadData() {
-            try {
-                const storedProfile = localStorage.getItem('klaroUserProfile');
-                const storedTransactions = localStorage.getItem('klaroTransactions');
-                if (storedProfile) {
-                    userProfile = JSON.parse(storedProfile);
-                    transactions = storedTransactions ? JSON.parse(storedTransactions) : [];
-                    // Ensure transactions have Date objects
-                    transactions.forEach(t => {
-                        if (t.timestamp) t.timestamp = new Date(t.timestamp);
-                    });
-                    return true;
+            // --- Translations ---
+            const translations = {
+                en: {
+                    total_income: 'Total Income', total_expenses: 'Total Expenses', balance: 'Balance',
+                    budget_breakdown: 'Your Budget Breakdown', needs: 'Needs', wants: 'Wants', savings: 'Savings',
+                    ai_financial_plan: 'Your AI Financial Plan', add_transaction: 'Add Transaction',
+                    motivational_quote: '"Take 5 minutes daily to track your expenses. 5 minutes today can drastically change your future self."',
+                    income: 'Income', expense: 'Expense', description: 'Description', description_placeholder: 'e.g., Salary, Groceries',
+                    amount: 'Amount', budget_category: 'Budget Category', need_option: 'Need', want_option: 'Want', saving_option: 'Saving',
+                    sub_category: 'Sub-Category', check_categories_helper: 'Please select the correct categories for your expense.',
+                    add_transaction_btn: 'Add Transaction', recent_transactions: 'Recent Transactions', no_transactions: 'No transactions yet for this month.',
+                    monthly_review: 'Monthly Review', review_for: 'Review for', net_savings: 'Net Savings', no_review_data: 'No data available for this month.',
+                    settings: 'Settings', customize_budget: 'Customize Your Budget Rule', set_financial_goal: 'Set Your Financial Goal',
+                    goal: 'Goal', goal_placeholder: 'e.g., Vacation', save_settings: 'Save Settings', logout: 'Logout',
+                    appearance: 'Appearance', theme: 'Theme', light: 'Light', dark: 'Dark', language: 'Language', welcome: 'Welcome, ', welcome_back: 'Welcome back, ',
+                    privacy: 'Privacy', hide_amounts: 'Hide amounts', edit_transaction: 'Edit Transaction', save_changes_btn: 'Save Changes',
+                    set_goal_prompt: 'Set a financial goal in your settings to get a personalized AI plan!',
+                    privacy_on: 'On', privacy_off: 'Off', currency: 'Currency', quick_adds: 'Quick Adds',
+                    progress: 'Progress',
+                    goal_wealth: 'Build Wealth', goal_safety: 'Create a Safety Net', goal_trip: 'Save for a Dream Trip', goal_car: 'Save for a New Car', goal_home: 'Save for a Home', goal_custom: 'Custom...'
+                },
+                hr: {
+                    total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
+                    budget_breakdown: 'Vaša Raspodjela Budžeta', needs: 'Potrebe', wants: 'Želje', savings: 'Štednja',
+                    ai_financial_plan: 'Vaš AI Financijski Plan', add_transaction: 'Dodaj Transakciju',
+                    motivational_quote: '"Uzmite 5 minuta dnevno za praćenje troškova. 5 minuta danas može drastično promijeniti vaše buduće ja."',
+                    income: 'Prihod', expense: 'Trošak', description: 'Opis', description_placeholder: 'npr. Plaća, Namirnice',
+                    amount: 'Iznos', budget_category: 'Kategorija Budžeta', need_option: 'Potreba', want_option: 'Želja', saving_option: 'Štednja',
+                    sub_category: 'Potkategorija', check_categories_helper: 'Molimo odaberite ispravne kategorije za vaš trošak.',
+                    add_transaction_btn: 'Dodaj Transakciju', recent_transactions: 'Nedavne Transakcije', no_transactions: 'Nema transakcija za ovaj mjesec.',
+                    monthly_review: 'Mjesečni Pregled', review_for: 'Pregled za', net_savings: 'Neto Ušteda', no_review_data: 'Nema podataka za ovaj mjesec.',
+                    settings: 'Postavke', customize_budget: 'Prilagodite Svoje Pravilo Budžetiranja', set_financial_goal: 'Postavite Svoj Financijski Cilj',
+                    goal: 'Cilj', goal_placeholder: 'npr. Putovanje', save_settings: 'Spremi Postavke', logout: 'Odjava',
+                    appearance: 'Izgled', theme: 'Tema', light: 'Svijetla', dark: 'Tamna', language: 'Jezik', welcome: 'Dobrodošli, ', welcome_back: 'Dobrodošli natrag, ',
+                    privacy: 'Privatnost', hide_amounts: 'Sakrij iznose', edit_transaction: 'Uredi Transakciju', save_changes_btn: 'Spremi Promjene',
+                    set_goal_prompt: 'Postavite financijski cilj u postavkama kako biste dobili personalizirani AI plan!',
+                    privacy_on: 'Uključeno', privacy_off: 'Isključeno', currency: 'Valuta', quick_adds: 'Brzi Unosi',
+                    progress: 'Napredak',
+                    goal_wealth: 'Izgradi Bogatstvo', goal_safety: 'Stvori Sigurnosnu Mrežu', goal_trip: 'Štedi za Putovanje Iz Snova', goal_car: 'Štedi za Novi Auto', goal_home: 'Štedi za Dom', goal_custom: 'Prilagođeno...'
                 }
-            } catch (e) {
-                console.error("Failed to load data from localStorage", e);
-            }
-            return false;
-        }
+            };
+            
+            const subCategoryMap = {
+                Needs: ['Housing', 'Utilities', 'Groceries', 'Transport', 'Health', 'Debt Payments'],
+                Wants: ['Dining Out', 'Entertainment', 'Shopping', 'Hobbies', 'Subscriptions', 'Vacation'],
+                Savings: ['Emergency Fund', 'Investments', 'Retirement']
+            };
 
-        function saveData() {
-            try {
-                localStorage.setItem('klaroUserProfile', JSON.stringify(userProfile));
-                localStorage.setItem('klaroTransactions', JSON.stringify(transactions));
-            } catch (e) {
-                console.error("Failed to save data to localStorage", e);
-            }
-        }
+            // --- DOM Elements ---
+            const onboardingView = document.getElementById('onboarding-view');
+            const appView = document.getElementById('app-view');
+            const onboardingForm = document.getElementById('onboarding-form');
+            const onboardingError = document.getElementById('onboarding-error');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const themeLightBtn = document.getElementById('theme-light-btn');
+            const themeDarkBtn = document.getElementById('theme-dark-btn');
+            const langEnBtn = document.getElementById('lang-en-btn');
+            const langHrBtn = document.getElementById('lang-hr-btn');
+            const settingsBtn = document.getElementById('settings-btn');
+            const transactionForm = document.getElementById('transaction-form');
+            const descriptionInput = document.getElementById('description');
+            const ruleCategoryInput = document.getElementById('rule-category');
+            const categoryInput = document.getElementById('category');
+            const typeIncomeBtn = document.getElementById('type-income');
+            const typeExpenseBtn = document.getElementById('type-expense');
+            const expenseFieldsWrapper = document.getElementById('expense-fields-wrapper');
+            const transactionListEl = document.getElementById('transaction-list');
+            const emptyState = document.getElementById('empty-state');
+            const tipsSection = document.getElementById('tips-section');
+            const tipsContent = document.getElementById('tips-content');
+            const totalIncomeEl = document.getElementById('total-income'), totalExpensesEl = document.getElementById('total-expenses'), balanceEl = document.getElementById('balance');
+            const needsTitleEl = document.getElementById('needs-title'), wantsTitleEl = document.getElementById('wants-title'), savingsTitleEl = document.getElementById('savings-title');
+            const needsSummaryEl = document.getElementById('needs-summary'), wantsSummaryEl = document.getElementById('wants-summary'), savingsSummaryEl = document.getElementById('savings-summary');
+            const needsBarEl = document.getElementById('needs-bar'), wantsBarEl = document.getElementById('wants-bar'), savingsBarEl = document.getElementById('savings-bar');
+            const settingsModal = document.getElementById('settings-modal');
+            const closeSettingsModalBtn = document.getElementById('close-settings-modal');
+            const monthlyReviewSection = document.getElementById('monthly-review-section');
+            const monthSelector = document.getElementById('month-selector');
+            const monthlyReviewContent = document.getElementById('monthly-review-content');
+            const noReviewData = document.getElementById('no-review-data');
+            const reviewTitle = document.getElementById('review-title');
+            const reviewIncome = document.getElementById('review-income');
+            const reviewExpenses = document.getElementById('review-expenses');
+            const reviewSavings = document.getElementById('review-savings');
+            const reviewAIAdvice = document.getElementById('review-ai-advice');
+            const monthlyChartCanvas = document.getElementById('monthly-chart');
+            let monthlyChart = null;
+            const resetAppBtn = document.getElementById('reset-app-btn');
+            const privacyOnBtn = document.getElementById('privacy-on-btn');
+            const privacyOffBtn = document.getElementById('privacy-off-btn');
+            const currencyEurBtn = document.getElementById('currency-eur-btn');
+            const currencyUsdBtn = document.getElementById('currency-usd-btn');
+            
+            // Edit Modal Elements
+            const editTransactionModal = document.getElementById('edit-transaction-modal');
+            const closeEditTransactionModalBtn = document.getElementById('close-edit-transaction-modal');
+            const editTransactionForm = document.getElementById('edit-transaction-form');
+            const editTransactionIdInput = document.getElementById('edit-transaction-id');
+            const editDescriptionInput = document.getElementById('edit-description');
+            const editAmountInput = document.getElementById('edit-amount');
+            const editRuleCategoryInput = document.getElementById('edit-rule-category');
+            const editCategoryInput = document.getElementById('edit-category');
+            const editExpenseFieldsWrapper = document.getElementById('edit-expense-fields-wrapper');
 
-        // --- Initialization ---
-        function initializeApp() {
-            if (loadData()) {
-                onboardingView.classList.add('hidden');
-                appView.classList.remove('hidden');
+
+            // --- App State ---
+            let userProfile = null;
+            let transactions = [];
+            let currentTransactionType = 'income';
+            let exchangeRate = 1; // Default to 1:1
+
+            // --- Data Management (localStorage) ---
+            function loadData() {
+                try {
+                    const storedProfile = localStorage.getItem('klaroUserProfile');
+                    const storedTransactions = localStorage.getItem('klaroTransactions');
+                    if (storedProfile) {
+                        userProfile = JSON.parse(storedProfile);
+                        transactions = storedTransactions ? JSON.parse(storedTransactions) : [];
+                        // Ensure transactions have Date objects
+                        transactions.forEach(t => {
+                            if (t.timestamp) t.timestamp = new Date(t.timestamp);
+                        });
+                        return true;
+                    }
+                } catch (e) {
+                    console.error("Failed to load data from localStorage", e);
+                }
+                return false;
+            }
+
+            function saveData() {
+                try {
+                    localStorage.setItem('klaroUserProfile', JSON.stringify(userProfile));
+                    localStorage.setItem('klaroTransactions', JSON.stringify(transactions));
+                } catch (e) {
+                    console.error("Failed to save data to localStorage", e);
+                }
+            }
+            
+            async function fetchExchangeRate() {
+                try {
+                    // Using a free, no-key-required API for simplicity
+                    const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+                    if (!response.ok) throw new Error('Network response was not ok.');
+                    const data = await response.json();
+                    exchangeRate = data.rates.USD;
+                } catch (error) {
+                    console.error("Could not fetch exchange rate, using default 1:1.", error);
+                    exchangeRate = 1.08; // A recent fallback
+                }
+            }
+
+            // --- Initialization ---
+            async function initializeApp() {
+                await fetchExchangeRate();
+                if (loadData()) {
+                    onboardingView.classList.add('hidden');
+                    appView.classList.remove('hidden');
+                    
+                    applyTheme(userProfile.settings.theme);
+                    applyLanguage(userProfile.settings.language, false); // Don't re-render here
+                    applyPrivacyModeUI(userProfile.settings.privacyMode);
+                    applyCurrencyUI(userProfile.settings.currency);
+                    renderApp();
+                } else {
+                    appView.classList.add('hidden');
+                    onboardingView.classList.remove('hidden');
+                    updateOnboardingTip(); // Initial call
+                }
+            }
+
+            function renderApp() {
+                if (!userProfile) return;
+
+                let welcomeText;
+                if (userProfile.isFirstLogin) {
+                    welcomeText = translations[userProfile.settings.language]?.welcome || 'Welcome, ';
+                    userProfile.isFirstLogin = false;
+                    saveData();
+                } else {
+                    welcomeText = translations[userProfile.settings.language]?.welcome_back || 'Welcome back, ';
+                }
                 
-                applyTheme(userProfile.settings.theme);
-                applyLanguage(userProfile.settings.language);
-                applyPrivacyModeUI(userProfile.settings.privacyMode);
-                renderApp();
-            } else {
-                appView.classList.add('hidden');
-                onboardingView.classList.remove('hidden');
+                welcomeMessage.textContent = welcomeText + (userProfile.name.split(' ')[0] || '');
+                renderTransactions();
+                updateSummaryAndBudget();
+                setupMonthSelector();
             }
-        }
 
-        function renderApp() {
-            if (!userProfile) return;
+            // --- Onboarding Logic ---
+            const onboardingHabitTip = document.getElementById('onboarding-habit-tip');
+            const onboardingCurrency = document.getElementById('onboarding-currency');
+            const onboardingGoalSelect = document.getElementById('onboarding-goal-select');
+            const onboardingGoalDesc = document.getElementById('onboarding-goal-desc');
 
-            let welcomeText;
-            if (userProfile.isFirstLogin) {
-                welcomeText = translations[userProfile.settings.language]?.welcome || 'Welcome, ';
-                userProfile.isFirstLogin = false;
+            function updateOnboardingTip() {
+                if(!onboardingCurrency) return;
+                const currency = onboardingCurrency.value;
+                const amount = currency === 'EUR' ? '20€' : '$20';
+                onboardingHabitTip.innerHTML = `Experts recommend setting aside **at least 10%** for savings and investments. Remember, even a small amount like ${amount} helps build a habit for a more secure future.`;
+            }
+            
+            if(onboardingCurrency) {
+                onboardingCurrency.addEventListener('change', updateOnboardingTip);
+            }
+            
+            if(onboardingGoalSelect) {
+                onboardingGoalSelect.addEventListener('change', () => {
+                    if(onboardingGoalSelect.value === 'custom') {
+                        onboardingGoalDesc.classList.remove('hidden');
+                        onboardingGoalDesc.focus();
+                    } else {
+                        onboardingGoalDesc.classList.add('hidden');
+                    }
+                });
+            }
+
+            const onboardingSliders = {
+                needs: document.getElementById('onboarding-needs-slider'),
+                wants: document.getElementById('onboarding-wants-slider'),
+                savings: document.getElementById('onboarding-savings-slider')
+            };
+            const onboardingSliderVals = {
+                needs: document.getElementById('onboarding-needs-slider-val'),
+                wants: document.getElementById('onboarding-wants-slider-val'),
+                savings: document.getElementById('onboarding-savings-slider-val')
+            };
+            const onboardingSliderTotal = document.getElementById('onboarding-slider-total');
+
+            function updateOnboardingSliderTotal(changedSlider) {
+                if (!onboardingSliders.needs) return; // Guard clause
+                
+                let needs = parseInt(onboardingSliders.needs.value);
+                let wants = parseInt(onboardingSliders.wants.value);
+                let savings = parseInt(onboardingSliders.savings.value);
+                
+                let total = needs + wants + savings;
+
+                if (total > 100) {
+                    let diff = total - 100;
+                    if (changedSlider === 'needs') {
+                        let wantsShare = wants / (wants + savings);
+                        let savingsShare = savings / (wants + savings);
+                        onboardingSliders.wants.value = wants - Math.round(diff * wantsShare);
+                        onboardingSliders.savings.value = savings - Math.round(diff * savingsShare);
+                    } else if (changedSlider === 'wants') {
+                        let needsShare = needs / (needs + savings);
+                        let savingsShare = savings / (needs + savings);
+                        onboardingSliders.needs.value = needs - Math.round(diff * needsShare);
+                        onboardingSliders.savings.value = savings - Math.round(diff * savingsShare);
+                    } else { // savings
+                        let needsShare = needs / (needs + wants);
+                        let wantsShare = wants / (needs + wants);
+                        onboardingSliders.needs.value = needs - Math.round(diff * needsShare);
+                        onboardingSliders.wants.value = wants - Math.round(diff * wantsShare);
+                    }
+                }
+                
+                onboardingSliderVals.needs.textContent = onboardingSliders.needs.value;
+                onboardingSliderVals.wants.textContent = onboardingSliders.wants.value;
+                onboardingSliderVals.savings.textContent = onboardingSliders.savings.value;
+
+                total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
+                onboardingSliderTotal.textContent = `Total: ${total}%`;
+                onboardingSliderTotal.style.color = total === 100 ? '#16a34a' : '#dc2626';
+            }
+
+
+            Object.keys(onboardingSliders).forEach(key => {
+                const slider = onboardingSliders[key];
+                 if(slider) {
+                    slider.addEventListener('input', () => updateOnboardingSliderTotal(key));
+                 }
+            });
+
+            if (onboardingForm) {
+                onboardingForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    onboardingError.textContent = '';
+                    const total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
+                    if (total !== 100) {
+                        onboardingError.textContent = 'Total must be exactly 100%.';
+                        return;
+                    }
+                    
+                    let goalDescription = onboardingGoalSelect.value;
+                    if (goalDescription === 'custom') {
+                        goalDescription = onboardingGoalDesc.value.trim();
+                    }
+
+                    userProfile = {
+                        name: document.getElementById('onboarding-name').value,
+                        isFirstLogin: true,
+                        settings: {
+                            budget: {
+                                needs: parseInt(onboardingSliders.needs.value),
+                                wants: parseInt(onboardingSliders.wants.value),
+                                savings: parseInt(onboardingSliders.savings.value),
+                            },
+                            goal: {
+                                description: goalDescription,
+                                amount: parseFloat(document.getElementById('onboarding-goal-amount').value.replace(',', '.')) || 0,
+                            },
+                            theme: 'light',
+                            language: 'en',
+                            privacyMode: false,
+                            currency: onboardingCurrency.value
+                        }
+                    };
+                    
+                    transactions = [];
+                    saveData();
+                    initializeApp();
+                });
+            }
+
+
+            // --- Appearance & Language & Privacy & Currency ---
+            function applyTheme(theme) {
+                document.documentElement.classList.toggle('dark', theme === 'dark');
+                themeLightBtn.classList.toggle('setting-btn-active', theme === 'light');
+                themeDarkBtn.classList.toggle('setting-btn-active', theme === 'dark');
+            }
+
+            function applyLanguage(lang, shouldRender = true) {
+                 document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.dataset.lang;
+                    const text = translations[lang]?.[key] || translations['en'][key];
+                    if(text) el.textContent = text;
+                });
+                 document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+                    const key = el.dataset.langPlaceholder;
+                    const text = translations[lang]?.[key] || translations['en'][key];
+                    if(text) el.placeholder = text;
+                });
+                langEnBtn.classList.toggle('setting-btn-active', lang === 'en');
+                langHrBtn.classList.toggle('setting-btn-active', lang === 'hr');
+                if (userProfile && userProfile.settings) {
+                    applyCurrencyUI(userProfile.settings.currency);
+                    if (shouldRender) {
+                        renderApp();
+                    }
+                }
+            }
+            
+            function applyPrivacyModeUI(isPrivate) {
+                privacyOnBtn.classList.toggle('setting-btn-active', isPrivate);
+                privacyOffBtn.classList.toggle('setting-btn-active', !isPrivate);
+            }
+
+            function applyCurrencyUI(currency) {
+                currencyEurBtn.classList.toggle('setting-btn-active', currency === 'EUR');
+                currencyUsdBtn.classList.toggle('setting-btn-active', currency === 'USD');
+                if (userProfile && userProfile.settings) {
+                    document.querySelectorAll('[data-lang="amount"]').forEach(el => {
+                        const baseText = translations[userProfile.settings.language]?.amount || 'Amount';
+                        el.textContent = `${baseText} (${currency === 'EUR' ? '€' : '$'})`;
+                    });
+                }
+            }
+
+
+            privacyOnBtn.addEventListener('click', () => {
+                userProfile.settings.privacyMode = true;
+                applyPrivacyModeUI(true);
                 saveData();
-            } else {
-                welcomeText = translations[userProfile.settings.language]?.welcome_back || 'Welcome back, ';
-            }
-            
-            welcomeMessage.textContent = welcomeText + (userProfile.name.split(' ')[0] || '');
-            renderTransactions();
-            updateSummaryAndBudget();
-            setupMonthSelector();
-        }
-
-        // --- Onboarding Logic ---
-        const onboardingSliders = {
-            needs: document.getElementById('onboarding-needs-slider'),
-            wants: document.getElementById('onboarding-wants-slider'),
-            savings: document.getElementById('onboarding-savings-slider')
-        };
-        const onboardingSliderVals = {
-            needs: document.getElementById('onboarding-needs-slider-val'),
-            wants: document.getElementById('onboarding-wants-slider-val'),
-            savings: document.getElementById('onboarding-savings-slider-val')
-        };
-        const onboardingSliderTotal = document.getElementById('onboarding-slider-total');
-
-        function updateOnboardingSliderTotal() {
-            const total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
-            onboardingSliderTotal.textContent = `Total: ${total}%`;
-            onboardingSliderTotal.style.color = total === 100 ? '#16a34a' : '#dc2626';
-        }
-
-        Object.values(onboardingSliders).forEach(slider => {
-            slider.addEventListener('input', (e) => {
-                const key = e.target.id.split('-')[1];
-                onboardingSliderVals[key].textContent = e.target.value;
-                updateOnboardingSliderTotal();
+                renderApp();
             });
-        });
+            privacyOffBtn.addEventListener('click', () => {
+                userProfile.settings.privacyMode = false;
+                applyPrivacyModeUI(false);
+                saveData();
+                renderApp();
+            });
 
-        onboardingForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            onboardingError.textContent = '';
-            const total = parseInt(onboardingSliders.needs.value) + parseInt(onboardingSliders.wants.value) + parseInt(onboardingSliders.savings.value);
-            if (total !== 100) {
-                onboardingError.textContent = 'Total must be exactly 100%.';
-                return;
-            }
-            
-            userProfile = {
-                name: document.getElementById('onboarding-name').value,
-                isFirstLogin: true,
-                settings: {
-                    budget: {
-                        needs: parseInt(onboardingSliders.needs.value),
-                        wants: parseInt(onboardingSliders.wants.value),
-                        savings: parseInt(onboardingSliders.savings.value),
-                    },
-                    goal: {
-                        description: document.getElementById('onboarding-goal-desc').value.trim(),
-                        amount: parseFloat(document.getElementById('onboarding-goal-amount').value) || 0,
-                    },
-                    theme: 'light',
-                    language: 'en',
-                    privacyMode: false
+            themeLightBtn.addEventListener('click', () => {
+                userProfile.settings.theme = 'light';
+                applyTheme('light');
+                saveData();
+            });
+            themeDarkBtn.addEventListener('click', () => {
+                userProfile.settings.theme = 'dark';
+                applyTheme('dark');
+                saveData();
+            });
+            langEnBtn.addEventListener('click', () => {
+                userProfile.settings.language = 'en';
+                saveData();
+                applyLanguage('en');
+            });
+            langHrBtn.addEventListener('click', () => {
+                userProfile.settings.language = 'hr';
+                saveData();
+                applyLanguage('hr');
+            });
+            currencyEurBtn.addEventListener('click', () => {
+                userProfile.settings.currency = 'EUR';
+                saveData();
+                applyCurrencyUI('EUR');
+                renderApp();
+            });
+            currencyUsdBtn.addEventListener('click', () => {
+                userProfile.settings.currency = 'USD';
+                saveData();
+                applyCurrencyUI('USD');
+                renderApp();
+            });
+
+
+            // --- Monthly Review, AI Functions, UI Listeners, etc. ---
+            function setupMonthSelector() {
+                const monthSet = new Set();
+                transactions.forEach(t => {
+                    if (t.timestamp) {
+                        const date = t.timestamp;
+                        const monthKey = `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
+                        monthSet.add(monthKey);
+                    }
+                });
+
+                if (monthSet.size === 0) {
+                    monthlyReviewSection.classList.add('hidden');
+                    return;
                 }
-            };
-            
-            transactions = [];
-            saveData();
-            initializeApp();
-        });
 
+                monthlyReviewSection.classList.remove('hidden');
+                const currentSelection = monthSelector.value;
+                monthSelector.innerHTML = '';
+                const sortedMonths = Array.from(monthSet).sort().reverse();
+                
+                sortedMonths.forEach(monthKey => {
+                    const [year, monthIndex] = monthKey.split('-');
+                    const date = new Date(year, monthIndex);
+                    const option = document.createElement('option');
+                    option.value = monthKey;
+                    option.textContent = date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' });
+                    monthSelector.appendChild(option);
+                });
+                
+                if (currentSelection && monthSet.has(currentSelection)) {
+                    monthSelector.value = currentSelection;
+                } else {
+                    monthSelector.value = sortedMonths[0] || '';
+                }
+                renderMonthlyReview(monthSelector.value);
+            }
 
-        // --- Appearance & Language & Privacy---
-        function applyTheme(theme) {
-            document.documentElement.classList.toggle('dark', theme === 'dark');
-            themeLightBtn.classList.toggle('setting-btn-active', theme === 'light');
-            themeDarkBtn.classList.toggle('setting-btn-active', theme === 'dark');
-        }
+            monthSelector.addEventListener('change', () => renderMonthlyReview(monthSelector.value));
 
-        function applyLanguage(lang) {
-             document.querySelectorAll('[data-lang]').forEach(el => {
-                const key = el.dataset.lang;
-                const text = translations[lang]?.[key] || translations['en'][key];
-                if(text) el.textContent = text;
-            });
-             document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
-                const key = el.dataset.langPlaceholder;
-                const text = translations[lang]?.[key] || translations['en'][key];
-                if(text) el.placeholder = text;
-            });
-            langEnBtn.classList.toggle('setting-btn-active', lang === 'en');
-            langHrBtn.classList.toggle('setting-btn-active', lang === 'hr');
-            
-            updateSummaryAndBudget();
-            setupMonthSelector();
-            renderTransactions();
-        }
-        
-        function applyPrivacyModeUI(isPrivate) {
-            privacyOnBtn.classList.toggle('setting-btn-active', isPrivate);
-            privacyOffBtn.classList.toggle('setting-btn-active', !isPrivate);
-        }
-
-        privacyOnBtn.addEventListener('click', () => {
-            userProfile.settings.privacyMode = true;
-            applyPrivacyModeUI(true);
-            saveData();
-            renderApp();
-        });
-        privacyOffBtn.addEventListener('click', () => {
-            userProfile.settings.privacyMode = false;
-            applyPrivacyModeUI(false);
-            saveData();
-            renderApp();
-        });
-
-        themeLightBtn.addEventListener('click', () => {
-            userProfile.settings.theme = 'light';
-            applyTheme('light');
-            saveData();
-        });
-        themeDarkBtn.addEventListener('click', () => {
-            userProfile.settings.theme = 'dark';
-            applyTheme('dark');
-            saveData();
-        });
-        langEnBtn.addEventListener('click', () => {
-            userProfile.settings.language = 'en';
-            applyLanguage('en');
-            saveData();
-        });
-        langHrBtn.addEventListener('click', () => {
-            userProfile.settings.language = 'hr';
-            applyLanguage('hr');
-            saveData();
-        });
-
-        // --- Monthly Review, AI Functions, UI Listeners, etc. ---
-        function setupMonthSelector() {
-            const monthSet = new Set();
-            transactions.forEach(t => {
-                if (t.timestamp) {
+            async function renderMonthlyReview(monthKey) {
+                 if (!monthKey) {
+                    noReviewData.classList.remove('hidden');
+                    monthlyReviewContent.classList.add('hidden');
+                    return;
+                }
+                const [year, monthIndex] = monthKey.split('-').map(Number);
+                
+                const monthlyTransactions = transactions.filter(t => {
+                    if(!t.timestamp) return false;
                     const date = t.timestamp;
-                    const monthKey = `${date.getFullYear()}-${String(date.getMonth()).padStart(2, '0')}`;
-                    monthSet.add(monthKey);
+                    return date.getFullYear() === year && date.getMonth() === monthIndex;
+                });
+
+                if (monthlyTransactions.length === 0) {
+                    noReviewData.classList.remove('hidden');
+                    monthlyReviewContent.classList.add('hidden');
+                    return;
+                }
+
+                noReviewData.classList.add('hidden');
+                monthlyReviewContent.classList.remove('hidden');
+
+                const date = new Date(year, monthIndex);
+                const reviewForText = translations[userProfile.settings.language].review_for || 'Review for';
+                reviewTitle.textContent = `${reviewForText} ${date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' })}`;
+
+                const income = monthlyTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+                const expenses = monthlyTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+                const spentOnNeeds = monthlyTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
+                const spentOnWants = monthlyTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
+                const amountSaved = monthlyTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+                const net = income - expenses;
+                
+                reviewIncome.innerHTML = getDisplayValue(income);
+                reviewExpenses.innerHTML = getDisplayValue(expenses);
+                reviewSavings.innerHTML = getDisplayValue(net);
+                reviewSavings.className = net >= 0 ? 'font-medium text-green-600' : 'font-medium text-red-600';
+                
+                const chartData = {
+                    labels: [translations[userProfile.settings.language].needs, translations[userProfile.settings.language].wants, translations[userProfile.settings.language].savings],
+                    datasets: [{
+                        data: [spentOnNeeds, spentOnWants, amountSaved],
+                        backgroundColor: ['#2563eb', '#9333ea', '#16a34a'],
+                        hoverOffset: 4
+                    }]
+                };
+
+                if (monthlyChart) {
+                    monthlyChart.destroy();
+                }
+                monthlyChart = new Chart(monthlyChartCanvas, {
+                    type: 'doughnut',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top', labels: { color: userProfile.settings.theme === 'dark' ? '#f9fafb' : '#6b7280' } },
+                            title: { display: false }
+                        }
+                    }
+                });
+
+                const monthlyExpensesList = monthlyTransactions.filter(t => t.type === 'expense');
+                const numberOfExpenses = monthlyExpensesList.length;
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonthIndex = now.getMonth();
+                const isPastMonth = year < currentYear || (year === currentYear && monthIndex < currentMonthIndex);
+
+                if (income > 0 && (numberOfExpenses >= 10 || isPastMonth)) {
+                    reviewAIAdvice.innerHTML = '<p>Generating AI analysis...</p>';
+                    const advice = await getAIMonthlyAdvice({income, spentOnNeeds, spentOnWants, amountSaved, month: date.toLocaleString('default', { month: 'long' })});
+                    reviewAIAdvice.innerHTML = advice;
+                } else if (income === 0) {
+                     reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Add an income for this month to get a full analysis.</p>`;
+                } else {
+                    reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Enter at least ${10 - numberOfExpenses} more expense(s) this month to receive your personalized AI analysis.</p>`;
+                }
+            }
+
+            async function getAIMonthlyAdvice(data) {
+                 if (isNaN(data.income) || isNaN(data.spentOnNeeds) || isNaN(data.spentOnWants) || isNaN(data.amountSaved)) {
+                    console.error("Invalid data passed to getAIMonthlyAdvice:", data);
+                    return "<p>Could not generate advice due to invalid data.</p>";
+                }
+                 const prompt = `Here is my financial summary in ${userProfile.settings.currency} for ${data.month}:
+                - Total Income: ${data.income.toFixed(2)}
+                - Spending on Needs: ${data.spentOnNeeds.toFixed(2)}
+                - Spending on Wants: ${data.spentOnWants.toFixed(2)}
+                - Total Saved (from transactions categorized as savings): ${data.amountSaved.toFixed(2)}
+                - My budget rule is roughly: Needs (${userProfile.settings.budget.needs}%), Wants (${userProfile.settings.budget.wants}%), Savings (${userProfile.settings.budget.savings}%)
+                - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}".
+
+                Provide a concise, motivating report. Start by highlighting one positive achievement. Then, gently point out one area for potential improvement with a practical tip. End with an encouraging sentence for the month ahead.`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: `You are a friendly and encouraging financial coach. Your core philosophy is 'Save for your future self'. Your advice must be in ${userProfile.settings.language === 'hr' ? 'Croatian' : 'English'}. Respond with simple HTML paragraphs (<p>).` }] }
+                };
+                 try {
+                    const response = await fetch(GEMINI_API_URL + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error('API Error');
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "<p>Could not generate advice at this time.</p>";
+                } catch (error) {
+                    console.error("AI Monthly Advice failed:", error);
+                    return "<p>Error generating your financial advice.</p>";
+                }
+            }
+
+            function getAIFinancialPlan() {
+                 if (!userProfile || !userProfile.settings) return;
+
+                const { goal, budget, language } = userProfile.settings;
+
+                if (!goal || !goal.description || !goal.amount || goal.amount <= 0) {
+                     tipsContent.innerHTML = `<p data-lang="set_goal_prompt">${translations[language]?.set_goal_prompt || translations.en.set_goal_prompt}</p>`;
+                     return;
+                 }
+                const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+                
+                if (totalIncome === 0) {
+                    tipsSection.classList.add('hidden');
+                    return;
+                }
+                
+                tipsSection.classList.remove('hidden');
+
+                const amountSaved = transactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+                const savingsTarget = totalIncome * (budget.savings / 100);
+                const progressPercentage = savingsTarget > 0 ? (amountSaved / savingsTarget) * 100 : 0;
+                
+                let motivationalMessage = '';
+                
+                if (progressPercentage >= 100) {
+                    motivationalMessage = language === 'hr' ? 'Odlično! Ispunili ste svoj mjesečni cilj štednje. Svaki dodatni euro je bonus za vaše buduće ja.' : "Excellent! You've met your savings goal for the month. Every extra bit is a bonus for your future self.";
+                } else if (progressPercentage >= 50) {
+                    motivationalMessage = language === 'hr' ? `Sjajan posao! Već ste na pola puta do svog mjesečnog cilja. Samo tako nastavite!` : "Great job! You're already halfway to your monthly goal. Keep up the momentum!";
+                } else if (progressPercentage > 0) {
+                    motivationalMessage = language === 'hr' ? 'Napravili ste odličan početak! Svaki doprinos, velik ili mali, gradi snažniju financijsku budućnost.' : "You've made a great start! Every contribution, big or small, builds a stronger financial future.";
+                } else {
+                    motivationalMessage = language === 'hr' ? 'Spremni za početak štednje? Sjetite se pravila "Prvo platite sebi".' : "Ready to start saving? Remember the 'Pay Yourself First' rule.";
+                }
+                
+                const tip = language === 'hr' ? 'Nakon što primite plaću, odmah prebacite planirani iznos na štednju. Tako uistinu prvo plaćate sebi.' : "After you get paid, transfer your planned savings immediately. That's how you truly pay yourself first.";
+
+                const progressText = translations[language]?.progress || 'Progress';
+                tipsContent.innerHTML = `<p>${motivationalMessage} <strong class="whitespace-nowrap">${progressText}: ${progressPercentage.toFixed(0)}%</strong></p><p class="italic mt-2 text-xs"><strong>Tip:</strong> ${tip}</p>`;
+            }
+
+            function setTransactionType(type) {
+                currentTransactionType = type;
+                typeIncomeBtn.classList.toggle('tab-active', type === 'income');
+                typeIncomeBtn.classList.toggle('tab-inactive', type !== 'income');
+                typeExpenseBtn.classList.toggle('tab-active', type === 'expense');
+                typeExpenseBtn.classList.toggle('tab-inactive', type !== 'expense');
+                expenseFieldsWrapper.classList.toggle('hidden', type === 'income');
+                if (type === 'expense') {
+                    updateSubCategoryOptions(ruleCategoryInput, categoryInput);
+                }
+            }
+            
+            function updateSubCategoryOptions(ruleSelect, categorySelect) {
+                const selectedRule = ruleSelect.value;
+                const options = subCategoryMap[selectedRule] || [];
+
+                categorySelect.innerHTML = ''; // Clear existing options
+
+                options.forEach(optionText => {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.textContent = optionText;
+                    categorySelect.appendChild(option);
+                });
+            }
+            
+            ruleCategoryInput.addEventListener('change', () => updateSubCategoryOptions(ruleCategoryInput, categoryInput));
+
+
+            typeIncomeBtn.addEventListener('click', () => setTransactionType('income'));
+            typeExpenseBtn.addEventListener('click', () => setTransactionType('expense'));
+
+            transactionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const descriptionVal = descriptionInput.value.trim();
+                const amountVal = parseFloat(document.getElementById('amount').value.replace(',', '.'));
+                if (!descriptionVal || isNaN(amountVal) || amountVal <= 0) return;
+
+                const newTransaction = { 
+                    id: Date.now().toString(),
+                    type: currentTransactionType, 
+                    description: descriptionVal, 
+                    amount: amountVal, 
+                    timestamp: new Date()
+                };
+                if (currentTransactionType === 'expense') {
+                    newTransaction.category = categoryInput.value;
+                    newTransaction.ruleCategory = ruleCategoryInput.value;
+                }
+                
+                transactions.unshift(newTransaction);
+                saveData();
+                
+                if (currentTransactionType === 'income') { setTransactionType('expense'); }
+                
+                descriptionInput.value = '';
+                document.getElementById('amount').value = '';
+
+                renderApp();
+            });
+
+            transactionListEl.addEventListener('click', (e) => {
+                const deleteButton = e.target.closest('.delete-btn');
+                if (deleteButton) { 
+                    const transactionId = deleteButton.dataset.id;
+                    transactions = transactions.filter(t => t.id !== transactionId);
+                    saveData();
+                    renderApp();
+                }
+
+                const editButton = e.target.closest('.edit-btn');
+                if (editButton) {
+                    const transactionId = editButton.dataset.id;
+                    openEditModal(transactionId);
                 }
             });
 
-            if (monthSet.size === 0) {
-                monthlyReviewSection.classList.add('hidden');
-                return;
+            const formatCurrency = (value) => {
+                const lang = userProfile?.settings.language === 'hr' ? 'hr-HR' : 'en-US'; 
+                const currency = userProfile?.settings.currency || 'EUR';
+                
+                let displayValue = value;
+                if(userProfile.baseCurrency && userProfile.baseCurrency !== currency) {
+                    if (currency === 'USD' && userProfile.baseCurrency === 'EUR') {
+                        displayValue = value * exchangeRate;
+                    } else if (currency === 'EUR' && userProfile.baseCurrency === 'USD') {
+                        displayValue = value / exchangeRate;
+                    }
+                }
+
+                return new Intl.NumberFormat(lang, { style: 'currency', currency: currency }).format(displayValue);
             }
-
-            monthlyReviewSection.classList.remove('hidden');
-            const currentSelection = monthSelector.value;
-            monthSelector.innerHTML = '';
-            const sortedMonths = Array.from(monthSet).sort().reverse();
             
-            sortedMonths.forEach(monthKey => {
-                const [year, monthIndex] = monthKey.split('-');
-                const date = new Date(year, monthIndex);
-                const option = document.createElement('option');
-                option.value = monthKey;
-                option.textContent = date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' });
-                monthSelector.appendChild(option);
-            });
-            
-            if (currentSelection && monthSet.has(currentSelection)) {
-                monthSelector.value = currentSelection;
-            } else {
-                monthSelector.value = sortedMonths[0] || '';
-            }
-            renderMonthlyReview(monthSelector.value);
-        }
-
-        monthSelector.addEventListener('change', () => renderMonthlyReview(monthSelector.value));
-
-        async function renderMonthlyReview(monthKey) {
-             if (!monthKey) {
-                noReviewData.classList.remove('hidden');
-                monthlyReviewContent.classList.add('hidden');
-                return;
-            }
-            const [year, monthIndex] = monthKey.split('-').map(Number);
-            
-            const monthlyTransactions = transactions.filter(t => {
-                if(!t.timestamp) return false;
-                const date = t.timestamp;
-                return date.getFullYear() === year && date.getMonth() === monthIndex;
-            });
-
-            if (monthlyTransactions.length === 0) {
-                noReviewData.classList.remove('hidden');
-                monthlyReviewContent.classList.add('hidden');
-                return;
-            }
-
-            noReviewData.classList.add('hidden');
-            monthlyReviewContent.classList.remove('hidden');
-
-            const date = new Date(year, monthIndex);
-            const reviewForText = translations[userProfile.settings.language].review_for || 'Review for';
-            reviewTitle.textContent = `${reviewForText} ${date.toLocaleString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { month: 'long', year: 'numeric' })}`;
-
-            const income = monthlyTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-            const expenses = monthlyTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
-            const spentOnNeeds = monthlyTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
-            const spentOnWants = monthlyTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
-            const amountSaved = monthlyTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
-            const net = income - expenses;
-            
-            reviewIncome.innerHTML = getDisplayValue(income);
-            reviewExpenses.innerHTML = getDisplayValue(expenses);
-            reviewSavings.innerHTML = getDisplayValue(net);
-            reviewSavings.className = net >= 0 ? 'font-medium text-green-600' : 'font-medium text-red-600';
-            
-            const chartData = {
-                labels: [translations[userProfile.settings.language].needs, translations[userProfile.settings.language].wants, translations[userProfile.settings.language].savings],
-                datasets: [{
-                    data: [spentOnNeeds, spentOnWants, amountSaved],
-                    backgroundColor: ['#2563eb', '#9333ea', '#16a34a'],
-                    hoverOffset: 4
-                }]
+            const getDisplayValue = (value) => {
+                if (userProfile?.settings.privacyMode) {
+                    return `<span>***</span> <button class="reveal-amount-btn" data-amount="${value}">
+                        <svg class="w-5 h-5 inline-block text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>`;
+                }
+                return formatCurrency(value);
             };
 
-            if (monthlyChart) {
-                monthlyChart.destroy();
+            function renderTransactions() {
+                const now = new Date();
+                const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
+
+                if (currentMonthTransactions.length === 0) {
+                    emptyState.style.display = 'block';
+                    transactionListEl.innerHTML = '';
+                    transactionListEl.appendChild(emptyState);
+                    return;
+                }
+                emptyState.style.display = 'none';
+                transactionListEl.innerHTML = currentMonthTransactions.map(t => {
+                    const isIncome = t.type === 'income';
+                    return `
+                        <div class="flex items-center p-4 border-b border-gray-200 last:border-b-0">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${isIncome ? 'bg-green-100' : (t.ruleCategory === 'Savings' ? 'bg-green-100' : 'bg-red-100')} dark:bg-opacity-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${isIncome ? 'text-green-600' : (t.ruleCategory === 'Savings' ? 'text-green-600' : 'text-red-600')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isIncome ? 'M12 4v16m8-8H4' : 'M20 12H4'}" /></svg>
+                            </div>
+                            <div class="flex-1 min-w-0 mx-4">
+                                <p class="font-semibold text-gray-800 truncate">${t.description}</p>
+                                <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
+                            </div>
+                            <div class="text-right flex items-center">
+                                <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${getDisplayValue(t.amount)}</p>
+                                <button data-id="${t.id}" class="edit-btn p-1 ml-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
+                                </button>
+                                <button data-id="${t.id}" class="delete-btn p-1 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
-            monthlyChart = new Chart(monthlyChartCanvas, {
-                type: 'doughnut',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'top', labels: { color: userProfile.settings.theme === 'dark' ? '#f9fafb' : '#6b7280' } },
-                        title: { display: false }
+
+            function updateSummaryAndBudget() {
+                if (!userProfile) return;
+                const now = new Date();
+                const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
+                const totalIncome = currentMonthTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+                const totalExpenses = currentMonthTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+                
+                totalIncomeEl.innerHTML = getDisplayValue(totalIncome);
+                totalExpensesEl.innerHTML = getDisplayValue(totalExpenses);
+                balanceEl.innerHTML = getDisplayValue(totalIncome - totalExpenses);
+
+                const needsBudget = totalIncome * (userProfile.settings.budget.needs / 100);
+                const wantsBudget = totalIncome * (userProfile.settings.budget.wants / 100);
+                const savingsTarget = totalIncome * (userProfile.settings.budget.savings / 100);
+                const spentOnNeeds = currentMonthTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
+                const spentOnWants = currentMonthTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
+                const amountSaved = currentMonthTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
+
+                needsTitleEl.textContent = `${translations[userProfile.settings.language].needs} (${userProfile.settings.budget.needs}%)`;
+                wantsTitleEl.textContent = `${translations[userProfile.settings.language].wants} (${userProfile.settings.budget.wants}%)`;
+                savingsTitleEl.textContent = `${translations[userProfile.settings.language].savings} (${userProfile.settings.budget.savings}%)`;
+
+                needsSummaryEl.innerHTML = `${getDisplayValue(spentOnNeeds)} / ${getDisplayValue(needsBudget)}`;
+                wantsSummaryEl.innerHTML = `${getDisplayValue(spentOnWants)} / ${getDisplayValue(wantsBudget)}`;
+                savingsSummaryEl.innerHTML = `${getDisplayValue(amountSaved)} / ${getDisplayValue(savingsTarget)}`;
+                
+                needsBarEl.style.width = `${needsBudget > 0 ? Math.min((spentOnNeeds / needsBudget) * 100, 100) : 0}%`;
+                wantsBarEl.style.width = `${wantsBudget > 0 ? Math.min((spentOnWants / wantsBudget) * 100, 100) : 0}%`;
+                savingsBarEl.style.width = `${savingsTarget > 0 ? Math.min((amountSaved / savingsTarget) * 100, 100) : 0}%`;
+
+                getAIFinancialPlan();
+            }
+            
+            // --- Modal Logic ---
+            const toggleModal = (modal) => {
+                modal.classList.toggle('hidden');
+                if (!modal.classList.contains('hidden')) {
+                    modal.classList.add('modal-active');
+                    setTimeout(() => { modal.querySelector('.modal-content').style.transform = 'translateY(0)'; }, 10);
+                } else {
+                     modal.querySelector('.modal-content').style.transform = 'translateY(-16rem)';
+                     setTimeout(() => modal.classList.remove('modal-active'), 250);
+                }
+            };
+
+            settingsBtn.addEventListener('click', () => toggleModal(settingsModal));
+            closeSettingsModalBtn.addEventListener('click', () => toggleModal(settingsModal));
+
+            // --- Edit Modal Logic ---
+            function openEditModal(transactionId) {
+                const transaction = transactions.find(t => t.id === transactionId);
+                if (!transaction) return;
+
+                editTransactionIdInput.value = transaction.id;
+                editDescriptionInput.value = transaction.description;
+                editAmountInput.value = transaction.amount;
+                
+                if (transaction.type === 'expense') {
+                    editExpenseFieldsWrapper.style.display = 'grid';
+                    editRuleCategoryInput.value = transaction.ruleCategory;
+                    updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput); // Update sub-categories
+                    editCategoryInput.value = transaction.category;
+                } else {
+                    editExpenseFieldsWrapper.style.display = 'none';
+                }
+
+                toggleModal(editTransactionModal);
+            }
+            
+            editRuleCategoryInput.addEventListener('change', () => updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput));
+            closeEditTransactionModalBtn.addEventListener('click', () => toggleModal(editTransactionModal));
+
+            editTransactionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const transactionId = editTransactionIdInput.value;
+                const transactionIndex = transactions.findIndex(t => t.id === transactionId);
+                if (transactionIndex === -1) return;
+
+                const updatedTransaction = {
+                    ...transactions[transactionIndex],
+                    description: editDescriptionInput.value,
+                    amount: parseFloat(editAmountInput.value.replace(',', '.'))
+                };
+
+                if (updatedTransaction.type === 'expense') {
+                    updatedTransaction.ruleCategory = editRuleCategoryInput.value;
+                    updatedTransaction.category = editCategoryInput.value;
+                }
+
+                transactions[transactionIndex] = updatedTransaction;
+                saveData();
+                renderApp();
+                toggleModal(editTransactionModal);
+            });
+
+
+            resetAppBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to reset all app data? This cannot be undone.')) {
+                    localStorage.removeItem('klaroUserProfile');
+                    localStorage.removeItem('klaroTransactions');
+                    window.location.reload();
+                }
+            });
+
+            // --- Privacy Reveal Logic ---
+            document.body.addEventListener('click', (e) => {
+                const revealBtn = e.target.closest('.reveal-amount-btn');
+                if (revealBtn) {
+                    const amount = parseFloat(revealBtn.dataset.amount);
+                    const amountContainer = revealBtn.previousElementSibling;
+                    if (amountContainer) {
+                        const originalText = amountContainer.textContent;
+                        amountContainer.textContent = formatCurrency(amount);
+                        setTimeout(() => {
+                            amountContainer.textContent = originalText;
+                        }, 2000);
+                    }
+                }
+
+                const revealSummaryBtn = e.target.closest('.reveal-summary-btn');
+                if (revealSummaryBtn) {
+                    const spent = parseFloat(revealSummaryBtn.dataset.spent);
+                    const budget = parseFloat(revealSummaryBtn.dataset.budget);
+                    const amountContainer = revealSummaryBtn.previousElementSibling;
+                    if (amountContainer) {
+                        const originalText = amountContainer.textContent; // "*** / ***"
+                        amountContainer.textContent = `${formatCurrency(spent)} / ${formatCurrency(budget)}`;
+                        setTimeout(() => {
+                            amountContainer.textContent = originalText;
+                        }, 2000);
                     }
                 }
             });
 
-            const monthlyExpensesList = monthlyTransactions.filter(t => t.type === 'expense');
-            const numberOfExpenses = monthlyExpensesList.length;
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            const currentMonthIndex = now.getMonth();
-            const isPastMonth = year < currentYear || (year === currentYear && monthIndex < currentMonthIndex);
-
-            if (income > 0 && (numberOfExpenses >= 10 || isPastMonth)) {
-                reviewAIAdvice.innerHTML = '<p>Generating AI analysis...</p>';
-                const advice = await getAIMonthlyAdvice({income, spentOnNeeds, spentOnWants, amountSaved, month: date.toLocaleString('default', { month: 'long' })});
-                reviewAIAdvice.innerHTML = advice;
-            } else if (income === 0) {
-                 reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Add an income for this month to get a full analysis.</p>`;
-            } else {
-                reviewAIAdvice.innerHTML = `<p class="text-sm text-gray-500">Enter at least ${10 - numberOfExpenses} more expense(s) this month to receive your personalized AI analysis.</p>`;
-            }
-        }
-
-        async function getAIMonthlyAdvice(data) {
-             if (isNaN(data.income) || isNaN(data.spentOnNeeds) || isNaN(data.spentOnWants) || isNaN(data.amountSaved)) {
-                console.error("Invalid data passed to getAIMonthlyAdvice:", data);
-                return "<p>Could not generate advice due to invalid data.</p>";
-            }
-             const prompt = `Here is my financial summary in EUR for ${data.month}:
-            - Total Income: ${data.income.toFixed(2)}
-            - Spending on Needs: ${data.spentOnNeeds.toFixed(2)}
-            - Spending on Wants: ${data.spentOnWants.toFixed(2)}
-            - Total Saved (from transactions categorized as savings): ${data.amountSaved.toFixed(2)}
-            - My budget rule is roughly: Needs (${userProfile.settings.budget.needs}%), Wants (${userProfile.settings.budget.wants}%), Savings (${userProfile.settings.budget.savings}%)
-            - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}".
-
-            Provide a concise, motivating report. Start by highlighting one positive achievement. Then, gently point out one area for potential improvement with a practical tip. End with an encouraging sentence for the month ahead.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: `You are a friendly and encouraging financial coach. Your core philosophy is 'Save for your future self'. Your advice must be in ${userProfile.settings.language === 'hr' ? 'Croatian' : 'English'}. Respond with simple HTML paragraphs (<p>).` }] }
-            };
-             try {
-                const response = await fetch(GEMINI_API_URL + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error('API Error');
-                const result = await response.json();
-                return result.candidates?.[0]?.content?.parts?.[0]?.text || "<p>Could not generate advice at this time.</p>";
-            } catch (error) {
-                console.error("AI Monthly Advice failed:", error);
-                return "<p>Error generating your financial advice.</p>";
-            }
-        }
-
-        async function getAIFinancialPlan() {
-             if (!userProfile.settings.goal.description || !userProfile.settings.goal.amount || userProfile.settings.goal.amount <= 0) {
-                 tipsSection.classList.remove('hidden');
-                 const promptText = translations[userProfile.settings.language]?.set_goal_prompt || translations.en.set_goal_prompt;
-                 tipsContent.innerHTML = `<p>${promptText}</p>`;
-                 return;
-             }
-            const totalIncome = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-            if (totalIncome === 0) {
-                tipsSection.classList.add('hidden');
-                return;
-            }
-
-            tipsSection.classList.remove('hidden');
-            tipsContent.innerHTML = '<p>Generating your personalized plan...</p>';
-            const spentOnNeeds = transactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
-            const spentOnWants = transactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
-            const amountSaved = transactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
-
-            const prompt = `User's financial data for the current period, in EUR:
-            - Total Income: ${totalIncome.toFixed(2)}
-            - Spending on Needs: ${spentOnNeeds.toFixed(2)}
-            - Spending on Wants: ${spentOnWants.toFixed(2)}
-            - Total Saved: ${amountSaved.toFixed(2)}
-            - Financial Goal: Save ${userProfile.settings.goal.amount.toFixed(2)} for "${userProfile.settings.goal.description}".
-            Provide a short, actionable financial plan (2-3 bullet points) to help the user reach their goal. Suggest specific, realistic adjustments.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: `You are a world-class financial advisor with a philosophy of 'saving for your future self'. Your advice is realistic, motivating, and framed around helping the user achieve long-term well-being and their goals. Respond in a clear, encouraging tone in ${userProfile.settings.language === 'hr' ? 'Croatian' : 'English'} with HTML list items (<li>).` }] }
-            };
-             try {
-                const response = await fetch(GEMINI_API_URL + apiKey, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error('API Error');
-                const result = await response.json();
-                const plan = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (plan) { tipsContent.innerHTML = `<ul class="list-disc list-inside space-y-1">${plan}</ul>`; } 
-                else { tipsContent.textContent = "Could not generate a plan at this time."; }
-            } catch (error) {
-                console.error("AI Plan generation failed:", error);
-                tipsContent.textContent = "Error generating your financial plan.";
-            }
-        }
-
-        function setTransactionType(type) {
-            currentTransactionType = type;
-            typeIncomeBtn.classList.toggle('tab-active', type === 'income');
-            typeIncomeBtn.classList.toggle('tab-inactive', type !== 'income');
-            typeExpenseBtn.classList.toggle('tab-active', type === 'expense');
-            typeExpenseBtn.classList.toggle('tab-inactive', type !== 'expense');
-            expenseFieldsWrapper.classList.toggle('hidden', type === 'income');
-            if (type === 'expense') {
-                updateSubCategoryOptions(ruleCategoryInput, categoryInput);
-            }
-        }
-        
-        function updateSubCategoryOptions(ruleSelect, categorySelect) {
-            const selectedRule = ruleSelect.value;
-            const options = subCategoryMap[selectedRule] || [];
-
-            categorySelect.innerHTML = ''; // Clear existing options
-
-            options.forEach(optionText => {
-                const option = document.createElement('option');
-                option.value = optionText;
-                option.textContent = optionText;
-                categorySelect.appendChild(option);
-            });
-        }
-        
-        ruleCategoryInput.addEventListener('change', () => updateSubCategoryOptions(ruleCategoryInput, categoryInput));
-
-
-        typeIncomeBtn.addEventListener('click', () => setTransactionType('income'));
-        typeExpenseBtn.addEventListener('click', () => setTransactionType('expense'));
-
-        transactionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const descriptionVal = descriptionInput.value.trim();
-            const amountVal = parseFloat(document.getElementById('amount').value);
-            if (!descriptionVal || isNaN(amountVal) || amountVal <= 0) return;
-
-            const newTransaction = { 
-                id: Date.now().toString(),
-                type: currentTransactionType, 
-                description: descriptionVal, 
-                amount: amountVal, 
-                timestamp: new Date()
-            };
-            if (currentTransactionType === 'expense') {
-                newTransaction.category = categoryInput.value;
-                newTransaction.ruleCategory = ruleCategoryInput.value;
-            }
-            
-            transactions.unshift(newTransaction);
-            saveData();
-            
-            if (currentTransactionType === 'income') { setTransactionType('expense'); }
-            
-            descriptionInput.value = '';
-            document.getElementById('amount').value = '';
-
-            renderApp();
+            // --- Initial Load ---
+            initializeApp();
         });
-
-        transactionListEl.addEventListener('click', (e) => {
-            const deleteButton = e.target.closest('.delete-btn');
-            if (deleteButton) { 
-                const transactionId = deleteButton.dataset.id;
-                transactions = transactions.filter(t => t.id !== transactionId);
-                saveData();
-                renderApp();
-            }
-
-            const editButton = e.target.closest('.edit-btn');
-            if (editButton) {
-                const transactionId = editButton.dataset.id;
-                openEditModal(transactionId);
-            }
-        });
-
-        const formatCurrency = (value) => new Intl.NumberFormat(userProfile?.settings.language === 'hr' ? 'hr-HR' : 'de-DE', { style: 'currency', currency: 'EUR' }).format(value);
-        
-        const getDisplayValue = (value) => {
-            if (userProfile?.settings.privacyMode) {
-                return `<span>***</span> <button class="reveal-amount-btn" data-amount="${value}">
-                    <svg class="w-5 h-5 inline-block text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                </button>`;
-            }
-            return formatCurrency(value);
-        };
-
-        function renderTransactions() {
-            const now = new Date();
-            const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
-
-            if (currentMonthTransactions.length === 0) {
-                emptyState.style.display = 'block';
-                transactionListEl.innerHTML = '';
-                transactionListEl.appendChild(emptyState);
-                return;
-            }
-            emptyState.style.display = 'none';
-            transactionListEl.innerHTML = currentMonthTransactions.map(t => {
-                const isIncome = t.type === 'income';
-                return `
-                    <div class="flex items-center p-4 border-b border-gray-200 last:border-b-0">
-                        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${isIncome ? 'bg-green-100' : (t.ruleCategory === 'Savings' ? 'bg-green-100' : 'bg-red-100')} dark:bg-opacity-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${isIncome ? 'text-green-600' : (t.ruleCategory === 'Savings' ? 'text-green-600' : 'text-red-600')}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isIncome ? 'M12 4v16m8-8H4' : 'M20 12H4'}" /></svg>
-                        </div>
-                        <div class="flex-1 min-w-0 mx-4">
-                            <p class="font-semibold text-gray-800 truncate">${t.description}</p>
-                            <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
-                        </div>
-                        <div class="text-right flex items-center">
-                            <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${getDisplayValue(t.amount)}</p>
-                            <button data-id="${t.id}" class="edit-btn p-1 ml-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
-                            </button>
-                            <button data-id="${t.id}" class="delete-btn p-1 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
-                                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateSummaryAndBudget() {
-            if (!userProfile) return;
-            const now = new Date();
-            const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const currentMonthTransactions = transactions.filter(t => t.timestamp && t.timestamp >= currentMonthStart);
-            const totalIncome = currentMonthTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-            const totalExpenses = currentMonthTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
-            
-            totalIncomeEl.innerHTML = getDisplayValue(totalIncome);
-            totalExpensesEl.innerHTML = getDisplayValue(totalExpenses);
-            balanceEl.innerHTML = getDisplayValue(totalIncome - totalExpenses);
-
-            const needsBudget = totalIncome * (userProfile.settings.budget.needs / 100);
-            const wantsBudget = totalIncome * (userProfile.settings.budget.wants / 100);
-            const savingsTarget = totalIncome * (userProfile.settings.budget.savings / 100);
-            const spentOnNeeds = currentMonthTransactions.filter(t => t.ruleCategory === 'Needs').reduce((s, t) => s + t.amount, 0);
-            const spentOnWants = currentMonthTransactions.filter(t => t.ruleCategory === 'Wants').reduce((s, t) => s + t.amount, 0);
-            const amountSaved = currentMonthTransactions.filter(t => t.ruleCategory === 'Savings').reduce((s, t) => s + t.amount, 0);
-
-            needsTitleEl.textContent = `${translations[userProfile.settings.language].needs} (${userProfile.settings.budget.needs}%)`;
-            wantsTitleEl.textContent = `${translations[userProfile.settings.language].wants} (${userProfile.settings.budget.wants}%)`;
-            savingsTitleEl.textContent = `${translations[userProfile.settings.language].savings} (${userProfile.settings.budget.savings}%)`;
-
-            needsSummaryEl.innerHTML = `${getDisplayValue(spentOnNeeds)} / ${getDisplayValue(needsBudget)}`;
-            wantsSummaryEl.innerHTML = `${getDisplayValue(spentOnWants)} / ${getDisplayValue(wantsBudget)}`;
-            savingsSummaryEl.innerHTML = `${getDisplayValue(amountSaved)} / ${getDisplayValue(savingsTarget)}`;
-            
-            needsBarEl.style.width = `${needsBudget > 0 ? Math.min((spentOnNeeds / needsBudget) * 100, 100) : 0}%`;
-            wantsBarEl.style.width = `${wantsBudget > 0 ? Math.min((spentOnWants / wantsBudget) * 100, 100) : 0}%`;
-            savingsBarEl.style.width = `${savingsTarget > 0 ? Math.min((amountSaved / savingsTarget) * 100, 100) : 0}%`;
-
-            getAIFinancialPlan();
-        }
-        
-        // --- Modal Logic ---
-        const toggleModal = (modal) => {
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                modal.classList.add('modal-active');
-                setTimeout(() => { modal.querySelector('.modal-content').style.transform = 'translateY(0)'; }, 10);
-            } else {
-                 modal.querySelector('.modal-content').style.transform = 'translateY(-16rem)';
-                 setTimeout(() => modal.classList.remove('modal-active'), 250);
-            }
-        };
-
-        settingsBtn.addEventListener('click', () => toggleModal(settingsModal));
-        closeSettingsModalBtn.addEventListener('click', () => toggleModal(settingsModal));
-
-        // --- Edit Modal Logic ---
-        function openEditModal(transactionId) {
-            const transaction = transactions.find(t => t.id === transactionId);
-            if (!transaction) return;
-
-            editTransactionIdInput.value = transaction.id;
-            editDescriptionInput.value = transaction.description;
-            editAmountInput.value = transaction.amount;
-            
-            if (transaction.type === 'expense') {
-                editExpenseFieldsWrapper.style.display = 'grid';
-                editRuleCategoryInput.value = transaction.ruleCategory;
-                updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput); // Update sub-categories
-                editCategoryInput.value = transaction.category;
-            } else {
-                editExpenseFieldsWrapper.style.display = 'none';
-            }
-
-            toggleModal(editTransactionModal);
-        }
-        
-        editRuleCategoryInput.addEventListener('change', () => updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput));
-        closeEditTransactionModalBtn.addEventListener('click', () => toggleModal(editTransactionModal));
-
-        editTransactionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const transactionId = editTransactionIdInput.value;
-            const transactionIndex = transactions.findIndex(t => t.id === transactionId);
-            if (transactionIndex === -1) return;
-
-            const updatedTransaction = {
-                ...transactions[transactionIndex],
-                description: editDescriptionInput.value,
-                amount: parseFloat(editAmountInput.value)
-            };
-
-            if (updatedTransaction.type === 'expense') {
-                updatedTransaction.ruleCategory = editRuleCategoryInput.value;
-                updatedTransaction.category = editCategoryInput.value;
-            }
-
-            transactions[transactionIndex] = updatedTransaction;
-            saveData();
-            renderApp();
-            toggleModal(editTransactionModal);
-        });
-
-
-        resetAppBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset all app data? This cannot be undone.')) {
-                localStorage.removeItem('klaroUserProfile');
-                localStorage.removeItem('klaroTransactions');
-                window.location.reload();
-            }
-        });
-
-        // --- Privacy Reveal Logic ---
-        document.body.addEventListener('click', (e) => {
-            const revealBtn = e.target.closest('.reveal-amount-btn');
-            if (revealBtn) {
-                const amount = parseFloat(revealBtn.dataset.amount);
-                const amountContainer = revealBtn.previousElementSibling;
-                if (amountContainer) {
-                    const originalText = amountContainer.textContent;
-                    amountContainer.textContent = formatCurrency(amount);
-                    setTimeout(() => {
-                        amountContainer.textContent = originalText;
-                    }, 2000);
-                }
-            }
-        });
-
-        // --- Initial Load ---
-        initializeApp();
     </script>
 </body>
 </html>
