@@ -172,18 +172,18 @@
             </div>
         </header>
         
-        <main id="main-content" class="space-y-5">
+        <main id="main-content" class="space-y-6">
             <!-- Summary Section -->
             <section id="summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="total_income" class="font-semibold text-gray-500">Total Income</h3>
                     <p id="total-income" class="text-2xl sm:text-3xl font-bold text-green-600 mt-2">€0.00</p>
                 </div>
-                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="total_expenses" class="font-semibold text-gray-500">Total Expenses</h3>
                     <p id="total-expenses" class="text-2xl sm:text-3xl font-bold text-red-600 mt-2">€0.00</p>
                 </div>
-                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 data-lang="balance" class="font-semibold text-gray-500">Balance</h3>
                     <p id="balance" class="text-2xl sm:text-3xl font-bold text-indigo-600 mt-2">€0.00</p>
                 </div>
@@ -199,6 +199,7 @@
                             <span id="needs-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="needs-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                        <p id="needs-progress" class="text-xs text-gray-500 text-right mt-1"></p>
                     </div>
                      <div>
                         <div class="flex justify-between items-center mb-1">
@@ -206,6 +207,7 @@
                             <span id="wants-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="wants-bar" class="bg-purple-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                        <p id="wants-progress" class="text-xs text-gray-500 text-right mt-1"></p>
                     </div>
                      <div>
                         <div class="flex justify-between items-center mb-1">
@@ -213,6 +215,7 @@
                             <span id="savings-summary" class="text-sm font-medium text-gray-600 flex items-center"></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-4"><div id="savings-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+                        <p id="savings-progress" class="text-xs text-gray-500 text-right mt-1"></p>
                     </div>
                 </div>
             </section>
@@ -255,6 +258,24 @@
                             <select id="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
                         </div>
                     </div>
+                    
+                    <!-- Recurring Expense Toggle -->
+                    <div id="recurring-toggle-add-wrapper" class="hidden">
+                        <div class="flex items-center justify-between mt-4">
+                            <label for="recurring-toggle-add" class="text-sm font-medium text-gray-700 dark:text-gray-300" data-lang="recurring_expense">Recurring Expense</label>
+                            <label class="inline-flex relative items-center cursor-pointer">
+                                <input type="checkbox" id="recurring-toggle-add" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-500 peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+                        <div id="recurring-day-add-wrapper" class="hidden mt-2">
+                            <label for="recurring-day-add" class="block text-sm font-medium text-gray-700" data-lang="day_of_month">Day of Month (1-31)</label>
+                            <select id="recurring-day-add" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <!-- Options 1-31 will be added by JS -->
+                            </select>
+                        </div>
+                    </div>
+
                     <button type="submit" data-lang="add_transaction_btn" class="mt-6 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Add Transaction</button>
                 </form>
             </section>
@@ -327,6 +348,24 @@
                          </select>
                     </div>
                 </div>
+
+                <!-- Recurring Expense Toggle -->
+                <div id="recurring-toggle-edit-wrapper" class="hidden">
+                    <div class="flex items-center justify-between mt-4">
+                        <label for="recurring-toggle-edit" class="text-sm font-medium text-gray-700 dark:text-gray-300" data-lang="recurring_expense">Recurring Expense</label>
+                        <label class="inline-flex relative items-center cursor-pointer">
+                            <input type="checkbox" id="recurring-toggle-edit" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-500 peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
+                    <div id="recurring-day-edit-wrapper" class="hidden mt-2">
+                        <label for="recurring-day-edit" class="block text-sm font-medium text-gray-700" data-lang="day_of_month">Day of Month (1-31)</label>
+                        <select id="recurring-day-edit" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                           <!-- Options 1-31 will be added by JS -->
+                        </select>
+                    </div>
+                </div>
+
                 <button type="submit" data-lang="save_changes_btn" class="mt-6 w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">Save Changes</button>
             </form>
         </div>
@@ -372,6 +411,13 @@
                     </div>
                 </div>
                 
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <h3 data-lang="manage_recurring" class="text-lg font-semibold mb-2">Manage Recurring Expenses</h3>
+                    <div id="recurring-list-container" class="mt-4 max-h-40 overflow-y-auto space-y-2">
+                        <!-- Recurring expenses will be listed here -->
+                    </div>
+                </div>
+                
                 <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6 flex justify-end">
                      <button id="reset-app-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600">Reset App Data</button>
                 </div>
@@ -404,7 +450,9 @@
                     set_goal_prompt: 'Set a financial goal in your settings to get a personalized AI plan!',
                     privacy_on: 'On', privacy_off: 'Off', currency: 'Currency', quick_adds: 'Quick Adds',
                     progress: 'Progress',
-                    goal_wealth: 'Build Wealth', goal_safety: 'Create a Safety Net', goal_trip: 'Save for a Dream Trip', goal_car: 'Save for a New Car', goal_home: 'Save for a Home', goal_custom: 'Custom...'
+                    goal_wealth: 'Build Wealth', goal_safety: 'Create a Safety Net', goal_trip: 'Save for a Dream Trip', goal_car: 'Save for a New Car', goal_home: 'Save for a Home', goal_custom: 'Custom...',
+                    recurring_expense: 'Recurring Expense', day_of_month: 'Day of Month (1-31)', manage_recurring: 'Manage Recurring Expenses', no_recurring_expenses: 'No recurring expenses set up.',
+                    next_payment_on: 'Next payment on'
                 },
                 hr: {
                     total_income: 'Ukupni Prihodi', total_expenses: 'Ukupni Troškovi', balance: 'Stanje',
@@ -423,7 +471,9 @@
                     set_goal_prompt: 'Postavite financijski cilj u postavkama kako biste dobili personalizirani AI plan!',
                     privacy_on: 'Uključeno', privacy_off: 'Isključeno', currency: 'Valuta', quick_adds: 'Brzi Unosi',
                     progress: 'Napredak',
-                    goal_wealth: 'Izgradi Bogatstvo', goal_safety: 'Stvori Sigurnosnu Mrežu', goal_trip: 'Štedi za Putovanje Iz Snova', goal_car: 'Štedi za Novi Auto', goal_home: 'Štedi za Dom', goal_custom: 'Prilagođeno...'
+                    goal_wealth: 'Izgradi Bogatstvo', goal_safety: 'Stvori Sigurnosnu Mrežu', goal_trip: 'Štedi za Putovanje Iz Snova', goal_car: 'Štedi za Novi Auto', goal_home: 'Štedi za Dom', goal_custom: 'Prilagođeno...',
+                    recurring_expense: 'Ponavljajući Trošak', day_of_month: 'Dan u mjesecu (1-31)', manage_recurring: 'Upravljaj Ponavljajućim Troškovima', no_recurring_expenses: 'Nema postavljenih ponavljajućih troškova.',
+                    next_payment_on: 'Iduća uplata'
                 }
             };
             
@@ -438,6 +488,7 @@
             const appView = document.getElementById('app-view');
             const onboardingForm = document.getElementById('onboarding-form');
             const onboardingError = document.getElementById('onboarding-error');
+            const onboardingCurrency = document.getElementById('onboarding-currency');
             const welcomeMessage = document.getElementById('welcome-message');
             const themeLightBtn = document.getElementById('theme-light-btn');
             const themeDarkBtn = document.getElementById('theme-dark-btn');
@@ -459,6 +510,7 @@
             const needsTitleEl = document.getElementById('needs-title'), wantsTitleEl = document.getElementById('wants-title'), savingsTitleEl = document.getElementById('savings-title');
             const needsSummaryEl = document.getElementById('needs-summary'), wantsSummaryEl = document.getElementById('wants-summary'), savingsSummaryEl = document.getElementById('savings-summary');
             const needsBarEl = document.getElementById('needs-bar'), wantsBarEl = document.getElementById('wants-bar'), savingsBarEl = document.getElementById('savings-bar');
+            const needsProgressEl = document.getElementById('needs-progress'), wantsProgressEl = document.getElementById('wants-progress'), savingsProgressEl = document.getElementById('savings-progress');
             const settingsModal = document.getElementById('settings-modal');
             const closeSettingsModalBtn = document.getElementById('close-settings-modal');
             const monthlyReviewSection = document.getElementById('monthly-review-section');
@@ -478,6 +530,19 @@
             const currencyEurBtn = document.getElementById('currency-eur-btn');
             const currencyUsdBtn = document.getElementById('currency-usd-btn');
             
+            // Recurring Expense Toggles
+            const recurringToggleAddWrapper = document.getElementById('recurring-toggle-add-wrapper');
+            const recurringToggleAdd = document.getElementById('recurring-toggle-add');
+            const recurringDayAddWrapper = document.getElementById('recurring-day-add-wrapper');
+            const recurringDayAddInput = document.getElementById('recurring-day-add');
+            
+            const recurringToggleEditWrapper = document.getElementById('recurring-toggle-edit-wrapper');
+            const recurringToggleEdit = document.getElementById('recurring-toggle-edit');
+            const recurringDayEditWrapper = document.getElementById('recurring-day-edit-wrapper');
+            const recurringDayEditInput = document.getElementById('recurring-day-edit');
+            
+            const recurringListContainer = document.getElementById('recurring-list-container');
+
             // Edit Modal Elements
             const editTransactionModal = document.getElementById('edit-transaction-modal');
             const closeEditTransactionModalBtn = document.getElementById('close-edit-transaction-modal');
@@ -494,7 +559,7 @@
             let userProfile = null;
             let transactions = [];
             let currentTransactionType = 'income';
-            let exchangeRate = 1; // Default to 1:1
+            let exchangeRate = 1.08; // Default fallback
 
             // --- Data Management (localStorage) ---
             function loadData() {
@@ -503,6 +568,17 @@
                     const storedTransactions = localStorage.getItem('klaroTransactions');
                     if (storedProfile) {
                         userProfile = JSON.parse(storedProfile);
+                        // Ensure new properties exist for older profiles
+                        if (!userProfile.settings.recurringExpenses) {
+                            userProfile.settings.recurringExpenses = [];
+                        }
+                        if (!userProfile.settings.lastRecurringCheck) {
+                            // Set to yesterday to force a check on first load after update
+                            const yesterday = new Date();
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            userProfile.settings.lastRecurringCheck = yesterday.toDateString();
+                        }
+                        
                         transactions = storedTransactions ? JSON.parse(storedTransactions) : [];
                         // Ensure transactions have Date objects
                         transactions.forEach(t => {
@@ -549,6 +625,7 @@
                     applyLanguage(userProfile.settings.language, false); // Don't re-render here
                     applyPrivacyModeUI(userProfile.settings.privacyMode);
                     applyCurrencyUI(userProfile.settings.currency);
+                    checkAndAddRecurringExpenses(); // Check on load
                     renderApp();
                 } else {
                     appView.classList.add('hidden');
@@ -573,11 +650,11 @@
                 renderTransactions();
                 updateSummaryAndBudget();
                 setupMonthSelector();
+                renderRecurringExpenses();
             }
 
             // --- Onboarding Logic ---
             const onboardingHabitTip = document.getElementById('onboarding-habit-tip');
-            const onboardingCurrency = document.getElementById('onboarding-currency');
             const onboardingGoalSelect = document.getElementById('onboarding-goal-select');
             const onboardingGoalDesc = document.getElementById('onboarding-goal-desc');
 
@@ -623,27 +700,41 @@
                 let savings = parseInt(onboardingSliders.savings.value);
                 
                 let total = needs + wants + savings;
+                let diff = total - 100;
 
-                if (total > 100) {
-                    let diff = total - 100;
+                if (diff > 0) {
                     if (changedSlider === 'needs') {
-                        let wantsShare = wants / (wants + savings);
-                        let savingsShare = savings / (wants + savings);
-                        onboardingSliders.wants.value = wants - Math.round(diff * wantsShare);
-                        onboardingSliders.savings.value = savings - Math.round(diff * savingsShare);
+                        let wantsShare = (wants + savings) === 0 ? 0.5 : wants / (wants + savings);
+                        let savingsShare = (wants + savings) === 0 ? 0.5 : savings / (wants + savings);
+                        onboardingSliders.wants.value = wants - Math.floor(diff * wantsShare);
+                        onboardingSliders.savings.value = savings - Math.ceil(diff * savingsShare);
                     } else if (changedSlider === 'wants') {
-                        let needsShare = needs / (needs + savings);
-                        let savingsShare = savings / (needs + savings);
-                        onboardingSliders.needs.value = needs - Math.round(diff * needsShare);
-                        onboardingSliders.savings.value = savings - Math.round(diff * savingsShare);
+                        let needsShare = (needs + savings) === 0 ? 0.5 : needs / (needs + savings);
+                        let savingsShare = (needs + savings) === 0 ? 0.5 : savings / (needs + savings);
+                        onboardingSliders.needs.value = needs - Math.floor(diff * needsShare);
+                        onboardingSliders.savings.value = savings - Math.ceil(diff * savingsShare);
                     } else { // savings
-                        let needsShare = needs / (needs + wants);
-                        let wantsShare = wants / (needs + wants);
-                        onboardingSliders.needs.value = needs - Math.round(diff * needsShare);
-                        onboardingSliders.wants.value = wants - Math.round(diff * wantsShare);
+                        let needsShare = (needs + wants) === 0 ? 0.5 : needs / (needs + wants);
+                        let wantsShare = (needs + wants) === 0 ? 0.5 : wants / (needs + wants);
+                        onboardingSliders.needs.value = needs - Math.floor(diff * needsShare);
+                        onboardingSliders.wants.value = wants - Math.ceil(diff * wantsShare);
                     }
                 }
                 
+                // Recalculate total after adjustments
+                needs = parseInt(onboardingSliders.needs.value);
+                wants = parseInt(onboardingSliders.wants.value);
+                savings = parseInt(onboardingSliders.savings.value);
+                total = needs + wants + savings;
+
+                // Final adjustment if rounding caused mismatch
+                if (total !== 100) {
+                    let diff = 100 - total;
+                    if (changedSlider !== 'needs') onboardingSliders.needs.value = needs + diff;
+                    else if (changedSlider !== 'wants') onboardingSliders.wants.value = wants + diff;
+                    else onboardingSliders.savings.value = savings + diff;
+                }
+
                 onboardingSliderVals.needs.textContent = onboardingSliders.needs.value;
                 onboardingSliderVals.wants.textContent = onboardingSliders.wants.value;
                 onboardingSliderVals.savings.textContent = onboardingSliders.savings.value;
@@ -675,6 +766,14 @@
                     if (goalDescription === 'custom') {
                         goalDescription = onboardingGoalDesc.value.trim();
                     }
+                    
+                    let goalAmount = parseFloat(document.getElementById('onboarding-goal-amount').value.replace(',', '.')) || 0;
+                    let baseCurrency = onboardingCurrency.value;
+                    
+                    // Convert goal to EUR if set in USD
+                    if (baseCurrency === 'USD') {
+                        goalAmount = goalAmount / exchangeRate;
+                    }
 
                     userProfile = {
                         name: document.getElementById('onboarding-name').value,
@@ -687,12 +786,14 @@
                             },
                             goal: {
                                 description: goalDescription,
-                                amount: parseFloat(document.getElementById('onboarding-goal-amount').value.replace(',', '.')) || 0,
+                                amount: goalAmount, // Always store in EUR
                             },
                             theme: 'light',
                             language: 'en',
                             privacyMode: false,
-                            currency: onboardingCurrency.value
+                            currency: baseCurrency,
+                            recurringExpenses: [],
+                            lastRecurringCheck: new Date(0).toDateString() // Set to epoch to force check
                         }
                     };
                     
@@ -833,7 +934,9 @@
                 renderMonthlyReview(monthSelector.value);
             }
 
-            monthSelector.addEventListener('change', () => renderMonthlyReview(monthSelector.value));
+            if(monthSelector) {
+                monthSelector.addEventListener('change', () => renderMonthlyReview(monthSelector.value));
+            }
 
             async function renderMonthlyReview(monthKey) {
                  if (!monthKey) {
@@ -921,13 +1024,24 @@
                     console.error("Invalid data passed to getAIMonthlyAdvice:", data);
                     return "<p>Could not generate advice due to invalid data.</p>";
                 }
+                
+                let convertedData = { ...data };
+                let goalAmount = userProfile.settings.goal.amount;
+                if (userProfile.settings.currency === 'USD') {
+                    convertedData.income *= exchangeRate;
+                    convertedData.spentOnNeeds *= exchangeRate;
+                    convertedData.spentOnWants *= exchangeRate;
+                    convertedData.amountSaved *= exchangeRate;
+                    goalAmount *= exchangeRate;
+                }
+
                  const prompt = `Here is my financial summary in ${userProfile.settings.currency} for ${data.month}:
-                - Total Income: ${data.income.toFixed(2)}
-                - Spending on Needs: ${data.spentOnNeeds.toFixed(2)}
-                - Spending on Wants: ${data.spentOnWants.toFixed(2)}
-                - Total Saved (from transactions categorized as savings): ${data.amountSaved.toFixed(2)}
+                - Total Income: ${convertedData.income.toFixed(2)}
+                - Spending on Needs: ${convertedData.spentOnNeeds.toFixed(2)}
+                - Spending on Wants: ${convertedData.spentOnWants.toFixed(2)}
+                - Total Saved (from transactions categorized as savings): ${convertedData.amountSaved.toFixed(2)}
                 - My budget rule is roughly: Needs (${userProfile.settings.budget.needs}%), Wants (${userProfile.settings.budget.wants}%), Savings (${userProfile.settings.budget.savings}%)
-                - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}".
+                - My long-term goal is: "${userProfile.settings.goal.description || 'general savings'}" for ${goalAmount.toFixed(2)} ${userProfile.settings.currency}.
 
                 Provide a concise, motivating report. Start by highlighting one positive achievement. Then, gently point out one area for potential improvement with a practical tip. End with an encouraging sentence for the month ahead.`;
 
@@ -949,7 +1063,7 @@
             function getAIFinancialPlan() {
                  if (!userProfile || !userProfile.settings) return;
 
-                const { goal, budget, language } = userProfile.settings;
+                const { goal, budget, language, currency } = userProfile.settings;
 
                 if (!goal || !goal.description || !goal.amount || goal.amount <= 0) {
                      tipsContent.innerHTML = `<p data-lang="set_goal_prompt">${translations[language]?.set_goal_prompt || translations.en.set_goal_prompt}</p>`;
@@ -993,8 +1107,14 @@
                 typeExpenseBtn.classList.toggle('tab-active', type === 'expense');
                 typeExpenseBtn.classList.toggle('tab-inactive', type !== 'expense');
                 expenseFieldsWrapper.classList.toggle('hidden', type === 'income');
+                recurringToggleAddWrapper.classList.toggle('hidden', type === 'income');
+                
                 if (type === 'expense') {
                     updateSubCategoryOptions(ruleCategoryInput, categoryInput);
+                } else {
+                    // Hide recurring options if switching to income
+                    recurringToggleAdd.checked = false;
+                    recurringDayAddWrapper.classList.add('hidden');
                 }
             }
             
@@ -1011,8 +1131,28 @@
                     categorySelect.appendChild(option);
                 });
             }
+
+            function populateDaySelect(selectElement) {
+                for (let i = 1; i <= 31; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    selectElement.appendChild(option);
+                }
+            }
             
+            populateDaySelect(recurringDayAddInput);
+            populateDaySelect(recurringDayEditInput);
+
             ruleCategoryInput.addEventListener('change', () => updateSubCategoryOptions(ruleCategoryInput, categoryInput));
+
+            recurringToggleAdd.addEventListener('change', () => {
+                recurringDayAddWrapper.classList.toggle('hidden', !recurringToggleAdd.checked);
+            });
+            
+            recurringToggleEdit.addEventListener('change', () => {
+                recurringDayEditWrapper.classList.toggle('hidden', !recurringToggleEdit.checked);
+            });
 
 
             typeIncomeBtn.addEventListener('click', () => setTransactionType('income'));
@@ -1021,19 +1161,42 @@
             transactionForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const descriptionVal = descriptionInput.value.trim();
-                const amountVal = parseFloat(document.getElementById('amount').value.replace(',', '.'));
+                let amountVal = parseFloat(document.getElementById('amount').value.replace(',', '.'));
                 if (!descriptionVal || isNaN(amountVal) || amountVal <= 0) return;
+
+                // Convert to base currency (EUR) if user is entering in USD
+                if (userProfile.settings.currency === 'USD') {
+                    amountVal = amountVal / exchangeRate;
+                }
 
                 const newTransaction = { 
                     id: Date.now().toString(),
                     type: currentTransactionType, 
                     description: descriptionVal, 
-                    amount: amountVal, 
+                    amount: amountVal, // Always save in EUR
                     timestamp: new Date()
                 };
+
+                const isRecurring = recurringToggleAdd.checked;
+                const dayOfMonth = parseInt(recurringDayAddInput.value);
+
                 if (currentTransactionType === 'expense') {
                     newTransaction.category = categoryInput.value;
                     newTransaction.ruleCategory = ruleCategoryInput.value;
+
+                    if (isRecurring && !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 31) {
+                        const recurringId = Date.now().toString() + '_recur';
+                        newTransaction.recurringId = recurringId;
+                        const newRecurringExpense = {
+                            id: recurringId,
+                            description: descriptionVal,
+                            amount: amountVal,
+                            dayOfMonth: dayOfMonth,
+                            ruleCategory: ruleCategoryInput.value,
+                            category: categoryInput.value
+                        };
+                        userProfile.settings.recurringExpenses.push(newRecurringExpense);
+                    }
                 }
                 
                 transactions.unshift(newTransaction);
@@ -1043,6 +1206,9 @@
                 
                 descriptionInput.value = '';
                 document.getElementById('amount').value = '';
+                recurringToggleAdd.checked = false;
+                recurringDayAddWrapper.classList.add('hidden');
+                recurringDayAddInput.value = '1';
 
                 renderApp();
             });
@@ -1068,12 +1234,9 @@
                 const currency = userProfile?.settings.currency || 'EUR';
                 
                 let displayValue = value;
-                if(userProfile.baseCurrency && userProfile.baseCurrency !== currency) {
-                    if (currency === 'USD' && userProfile.baseCurrency === 'EUR') {
-                        displayValue = value * exchangeRate;
-                    } else if (currency === 'EUR' && userProfile.baseCurrency === 'USD') {
-                        displayValue = value / exchangeRate;
-                    }
+                // All stored values are in EUR (base currency)
+                if (currency === 'USD') {
+                    displayValue = value * exchangeRate;
                 }
 
                 return new Intl.NumberFormat(lang, { style: 'currency', currency: currency }).format(displayValue);
@@ -1102,6 +1265,8 @@
                 emptyState.style.display = 'none';
                 transactionListEl.innerHTML = currentMonthTransactions.map(t => {
                     const isIncome = t.type === 'income';
+                    const isRecurring = t.recurringId && userProfile.settings.recurringExpenses.some(r => r.id === t.recurringId);
+                    
                     return `
                         <div class="flex items-center p-4 border-b border-gray-200 last:border-b-0">
                             <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${isIncome ? 'bg-green-100' : (t.ruleCategory === 'Savings' ? 'bg-green-100' : 'bg-red-100')} dark:bg-opacity-10">
@@ -1109,7 +1274,10 @@
                             </div>
                             <div class="flex-1 min-w-0 mx-4">
                                 <p class="font-semibold text-gray-800 truncate">${t.description}</p>
-                                <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
+                                <div class="flex items-center space-x-2">
+                                    <p class="text-sm text-gray-500">${isIncome ? (translations[userProfile.settings.language].income || 'Income') : `${t.category} (${t.ruleCategory})`}</p>
+                                    ${isRecurring ? `<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2.086a8.001 8.001 0 00-11.99 0M20 20v-5h-.582m-15.356-2.086a8.001 8.001 0 0011.99 0"></path></svg>` : ''}
+                                </div>
                             </div>
                             <div class="text-right flex items-center">
                                 <p class="font-bold text-lg whitespace-nowrap ${isIncome ? 'text-green-600' : 'text-red-600'}">${isIncome ? '+' : '-'}${getDisplayValue(t.amount)}</p>
@@ -1152,9 +1320,25 @@
                 wantsSummaryEl.innerHTML = `${getDisplayValue(spentOnWants)} / ${getDisplayValue(wantsBudget)}`;
                 savingsSummaryEl.innerHTML = `${getDisplayValue(amountSaved)} / ${getDisplayValue(savingsTarget)}`;
                 
-                needsBarEl.style.width = `${needsBudget > 0 ? Math.min((spentOnNeeds / needsBudget) * 100, 100) : 0}%`;
-                wantsBarEl.style.width = `${wantsBudget > 0 ? Math.min((spentOnWants / wantsBudget) * 100, 100) : 0}%`;
-                savingsBarEl.style.width = `${savingsTarget > 0 ? Math.min((amountSaved / savingsTarget) * 100, 100) : 0}%`;
+                const needsPercentNum = needsBudget > 0 ? (spentOnNeeds / needsBudget) * 100 : 0;
+                const wantsPercentNum = wantsBudget > 0 ? (spentOnWants / wantsBudget) * 100 : 0;
+                const savingsPercentNum = savingsTarget > 0 ? (amountSaved / savingsTarget) * 100 : 0;
+
+                needsBarEl.style.width = `${Math.min(needsPercentNum, 100)}%`;
+                wantsBarEl.style.width = `${Math.min(wantsPercentNum, 100)}%`;
+                savingsBarEl.style.width = `${Math.min(savingsPercentNum, 100)}%`;
+
+                const progressText = translations[userProfile.settings.language]?.progress || 'Progress';
+                
+                if (userProfile.settings.privacyMode) {
+                    needsProgressEl.textContent = `${progressText}: ***%`;
+                    wantsProgressEl.textContent = `${progressText}: ***%`;
+                    savingsProgressEl.textContent = `${progressText}: ***%`;
+                } else {
+                    needsProgressEl.textContent = `${progressText}: ${needsPercentNum.toFixed(0)}%`;
+                    wantsProgressEl.textContent = `${progressText}: ${wantsPercentNum.toFixed(0)}%`;
+                    savingsProgressEl.textContent = `${progressText}: ${savingsPercentNum.toFixed(0)}%`;
+                }
 
                 getAIFinancialPlan();
             }
@@ -1181,15 +1365,34 @@
 
                 editTransactionIdInput.value = transaction.id;
                 editDescriptionInput.value = transaction.description;
-                editAmountInput.value = transaction.amount;
+                
+                let displayAmount = transaction.amount;
+                if (userProfile.settings.currency === 'USD') {
+                    displayAmount = transaction.amount * exchangeRate;
+                }
+                editAmountInput.value = displayAmount.toFixed(2);
                 
                 if (transaction.type === 'expense') {
                     editExpenseFieldsWrapper.style.display = 'grid';
+                    recurringToggleEditWrapper.classList.remove('hidden');
                     editRuleCategoryInput.value = transaction.ruleCategory;
                     updateSubCategoryOptions(editRuleCategoryInput, editCategoryInput); // Update sub-categories
                     editCategoryInput.value = transaction.category;
+                    
+                    // Check and set recurring status
+                    const recurringData = userProfile.settings.recurringExpenses.find(r => r.id === transaction.recurringId);
+                    if (recurringData) {
+                        recurringToggleEdit.checked = true;
+                        recurringDayEditWrapper.classList.remove('hidden');
+                        recurringDayEditInput.value = recurringData.dayOfMonth;
+                    } else {
+                        recurringToggleEdit.checked = false;
+                        recurringDayEditWrapper.classList.add('hidden');
+                        recurringDayEditInput.value = '1';
+                    }
                 } else {
                     editExpenseFieldsWrapper.style.display = 'none';
+                    recurringToggleEditWrapper.classList.add('hidden');
                 }
 
                 toggleModal(editTransactionModal);
@@ -1204,15 +1407,51 @@
                 const transactionIndex = transactions.findIndex(t => t.id === transactionId);
                 if (transactionIndex === -1) return;
 
+                let amountVal = parseFloat(editAmountInput.value.replace(',', '.'));
+                if (userProfile.settings.currency === 'USD') {
+                    amountVal = amountVal / exchangeRate; // Convert back to EUR for storage
+                }
+
                 const updatedTransaction = {
                     ...transactions[transactionIndex],
                     description: editDescriptionInput.value,
-                    amount: parseFloat(editAmountInput.value.replace(',', '.'))
+                    amount: amountVal
                 };
+                
+                const isRecurring = recurringToggleEdit.checked;
+                const dayOfMonth = parseInt(recurringDayEditInput.value);
+                const existingRecurringIndex = userProfile.settings.recurringExpenses.findIndex(r => r.id === updatedTransaction.recurringId);
 
                 if (updatedTransaction.type === 'expense') {
                     updatedTransaction.ruleCategory = editRuleCategoryInput.value;
                     updatedTransaction.category = editCategoryInput.value;
+
+                    if (isRecurring && !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 31) {
+                        const recurringData = { 
+                            id: updatedTransaction.recurringId || Date.now().toString() + '_recur',
+                            description: updatedTransaction.description,
+                            amount: updatedTransaction.amount,
+                            dayOfMonth: dayOfMonth,
+                            ruleCategory: updatedTransaction.ruleCategory,
+                            category: updatedTransaction.category
+                        };
+
+                        if (existingRecurringIndex > -1) {
+                            // It was already recurring, just update it
+                            userProfile.settings.recurringExpenses[existingRecurringIndex] = recurringData;
+                        } else {
+                            // It's a newly recurring item
+                            updatedTransaction.recurringId = recurringData.id;
+                            userProfile.settings.recurringExpenses.push(recurringData);
+                        }
+                    } else {
+                        // Toggle is OFF
+                        if (existingRecurringIndex > -1) {
+                            // It *was* recurring, but isn't anymore
+                            userProfile.settings.recurringExpenses.splice(existingRecurringIndex, 1);
+                            delete updatedTransaction.recurringId; // Clean the transaction
+                        }
+                    }
                 }
 
                 transactions[transactionIndex] = updatedTransaction;
@@ -1229,6 +1468,136 @@
                     window.location.reload();
                 }
             });
+            
+            // --- Recurring Expenses Logic ---
+            function getNextPaymentDate(exp) {
+                const now = new Date();
+                let paymentDate = new Date(now.getFullYear(), now.getMonth(), exp.dayOfMonth);
+
+                // Adjust for weekend
+                const dayOfWeek = paymentDate.getDay();
+                if (dayOfWeek === 6) { // Saturday
+                    paymentDate.setDate(paymentDate.getDate() + 2);
+                } else if (dayOfWeek === 0) { // Sunday
+                    paymentDate.setDate(paymentDate.getDate() + 1);
+                }
+
+                // If this month's adjusted payment date has already passed, set for next month
+                if (paymentDate < now) {
+                    paymentDate = new Date(now.getFullYear(), now.getMonth() + 1, exp.dayOfMonth);
+                    // Re-check weekend for next month
+                    const nextMonthDayOfWeek = paymentDate.getDay();
+                    if (nextMonthDayOfWeek === 6) { // Saturday
+                        paymentDate.setDate(paymentDate.getDate() + 2);
+                    } else if (nextMonthDayOfWeek === 0) { // Sunday
+                        paymentDate.setDate(paymentDate.getDate() + 1);
+                    }
+                }
+                return paymentDate;
+            }
+
+            recurringListContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-recurring-btn')) {
+                    const id = e.target.closest('.delete-recurring-btn').dataset.id;
+                    userProfile.settings.recurringExpenses = userProfile.settings.recurringExpenses.filter(exp => exp.id !== id);
+                    
+                    // Also remove recurringId from any transactions that might have it
+                    transactions.forEach(t => {
+                        if (t.recurringId === id) {
+                            delete t.recurringId;
+                        }
+                    });
+
+                    saveData();
+                    renderRecurringExpenses();
+                }
+            });
+
+            function renderRecurringExpenses() {
+                recurringListContainer.innerHTML = '';
+                if (!userProfile || !userProfile.settings.recurringExpenses || userProfile.settings.recurringExpenses.length === 0) {
+                    recurringListContainer.innerHTML = `<p class="text-sm text-gray-500" data-lang="no_recurring_expenses">${translations[userProfile.settings.language]?.no_recurring_expenses || 'No recurring expenses set up yet.'}</p>`;
+                    return;
+                }
+
+                userProfile.settings.recurringExpenses.forEach(exp => {
+                    const el = document.createElement('div');
+                    el.className = "flex justify-between items-center p-2 bg-gray-100 dark:bg-gray-800 rounded-md";
+                    
+                    const nextPaymentDate = getNextPaymentDate(exp);
+                    const formattedDate = nextPaymentDate.toLocaleDateString(userProfile.settings.language === 'hr' ? 'hr-HR' : 'en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const nextPaymentText = translations[userProfile.settings.language]?.next_payment_on || 'Next payment on';
+
+                    el.innerHTML = `
+                        <div>
+                            <p class="font-semibold">${exp.description} (${getDisplayValue(exp.amount)})</p>
+                            <p class="text-sm text-gray-500">${nextPaymentText}: ${formattedDate}</p>
+                        </div>
+                        <button type="button" data-id="${exp.id}" class="delete-recurring-btn p-1 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    `;
+                    recurringListContainer.appendChild(el);
+                });
+            }
+            
+            function checkAndAddRecurringExpenses() {
+                const now = new Date();
+                const todayStr = now.toDateString();
+                const todayDay = now.getDate();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+
+                if (userProfile.settings.lastRecurringCheck === todayStr) {
+                    return; // Already checked today
+                }
+                
+                let expensesAdded = false;
+                userProfile.settings.recurringExpenses.forEach(exp => {
+                    
+                    let paymentDate = new Date(currentYear, currentMonth, exp.dayOfMonth);
+                    let dayOfWeek = paymentDate.getDay();
+
+                    if (dayOfWeek === 6) { // Saturday
+                        paymentDate.setDate(paymentDate.getDate() + 2);
+                    } else if (dayOfWeek === 0) { // Sunday
+                        paymentDate.setDate(paymentDate.getDate() + 1);
+                    }
+
+                    // Check if the adjusted payment day is today
+                    if (paymentDate.getDate() === todayDay && paymentDate.getMonth() === currentMonth) {
+                        const alreadyAdded = transactions.some(t => 
+                            t.recurringId === exp.id &&
+                            t.timestamp.getFullYear() === currentYear &&
+                            t.timestamp.getMonth() === currentMonth
+                        );
+                        
+                        if (!alreadyAdded) {
+                            const newTransaction = {
+                                id: Date.now().toString() + exp.id,
+                                type: 'expense',
+                                description: exp.description,
+                                amount: exp.amount,
+                                timestamp: paymentDate, // Use the adjusted payment date
+                                category: exp.category,
+                                ruleCategory: exp.ruleCategory,
+                                recurringId: exp.id // Link to recurring expense
+                            };
+                            transactions.unshift(newTransaction);
+                            expensesAdded = true;
+                        }
+                    }
+                });
+
+                if (expensesAdded) {
+                    saveData();
+                }
+                
+                // Mark as checked for today
+                userProfile.settings.lastRecurringCheck = todayStr;
+                saveData();
+            }
+
 
             // --- Privacy Reveal Logic ---
             document.body.addEventListener('click', (e) => {
@@ -1266,4 +1635,3 @@
     </script>
 </body>
 </html>
-
